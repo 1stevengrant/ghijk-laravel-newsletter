@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { PencilLineIcon, TrashIcon } from 'lucide-react';
+import DeleteList from '@/components/lists/delete-list';
+import { AddNewList } from '@/components/lists/add-new-list';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,7 +32,9 @@ export default function NewsletterLists({ lists }: {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Lists" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-                {/*<AddNew />*/}
+                <div>
+                    <AddNewList />
+                </div>
                 <Table>
                     {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
                     <TableHeader>
@@ -52,9 +56,7 @@ export default function NewsletterLists({ lists }: {
                                     {list.from_email}
                                 </TableCell>
                                 <TableCell className="space-x-2">
-                                    <Button variant="destructive">
-                                        <TrashIcon />
-                                    </Button>
+                                    <DeleteList />
                                     <Button>
                                         <PencilLineIcon />
                                     </Button>

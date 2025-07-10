@@ -31,7 +31,15 @@ class NewsletterListController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'from_name' => 'required|string|max:255',
+            'from_email' => 'required|email|max:255',
+        ]);
+
+        NewsletterList::create($request->only(['name', 'from_name', 'from_email']));
+
+        return redirect()->route('lists.index')->with('success', 'Newsletter list created successfully.');
     }
 
     /**
@@ -63,6 +71,8 @@ class NewsletterListController extends Controller
      */
     public function destroy(NewsletterList $newsletterList)
     {
-        //
+        $newsletterList->delete();
+
+        return redirect()->route('lists.index')->with('success', 'Newsletter list deleted successfully.');
     }
 }
