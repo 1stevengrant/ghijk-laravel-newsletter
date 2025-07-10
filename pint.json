@@ -1,0 +1,19 @@
+{
+    "preset": "laravel",
+    "notName": ["*.json"],
+    "rules": {
+        "array_push": true,
+        "mb_str_functions": true,
+        "modernize_types_casting": true,
+        "no_superfluous_elseif": true,
+        "no_useless_else": true,
+        "no_multiple_statements_per_line": true,
+        "ordered_traits": true,
+        "ordered_imports": {
+            "sort_algorithm": "length"
+        },
+        "concat_space": {
+            "spacing": "one"
+        }
+    }
+}
