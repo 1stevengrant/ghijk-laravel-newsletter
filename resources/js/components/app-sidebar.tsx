@@ -1,28 +1,39 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem
+} from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, UsersIcon } from 'lucide-react';
+import { LayoutGrid, ListIcon, UsersIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: route('dashboard'),
-        icon: LayoutGrid,
+        icon: LayoutGrid
+    },
+    {
+        title: 'Lists',
+        href: route('lists.index'),
+        icon: ListIcon
     },
     {
         title: 'Subscribers',
         href: route('subscribers.index'),
-        icon: UsersIcon,
+        icon: UsersIcon
     }
 ];
 
-const footerNavItems: NavItem[] = [
-
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (
