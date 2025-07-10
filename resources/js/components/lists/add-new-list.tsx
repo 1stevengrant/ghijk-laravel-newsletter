@@ -11,9 +11,10 @@ import { useForm } from '@inertiajs/react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
-import React from 'react';
+import React, { useState } from 'react';
 
 export const AddNewList = () => {
+    const [open, setOpen] = useState(false);
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm<Required<{
         name: string;
         from_name: string;
@@ -30,12 +31,13 @@ export const AddNewList = () => {
     };
 
     const closeModal = () => {
+        setOpen(false);
         clearErrors();
         reset();
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>Add New List</Button>
             </DialogTrigger>

@@ -56,7 +56,7 @@ export default function NewsletterLists({ lists }: {
                                     {list.from_email}
                                 </TableCell>
                                 <TableCell className="space-x-2">
-                                    <DeleteList />
+                                    <DeleteList list={list} />
                                     <Button>
                                         <PencilLineIcon />
                                     </Button>

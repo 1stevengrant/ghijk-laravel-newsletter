@@ -69,9 +69,18 @@ class NewsletterListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(NewsletterList $newsletterList)
+    public function destroy(Request $request, NewsletterList $list)
     {
-        $newsletterList->delete();
+        // Validate that the name matches (optional security check)
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        if ($request->name !== $list->name) {
+            return back()->withErrors(['name' => 'The list name does not match.']);
+        }
+
+        $list->delete();
 
         return redirect()->route('lists.index')->with('success', 'Newsletter list deleted successfully.');
     }
