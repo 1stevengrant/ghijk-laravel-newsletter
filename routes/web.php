@@ -11,7 +11,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::resource('lists', NewsletterListController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])
+        ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->names('lists');
     Route::resource('subscribers', NewsletterSubscriberController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])

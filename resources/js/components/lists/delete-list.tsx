@@ -29,9 +29,6 @@ export default function DeleteList({ list }: DeleteListProps) {
         }
 
         destroy(route('lists.destroy', list.id), {
-            data: {
-                name: data.name,
-            },
             onSuccess: () => closeModal(),
             onFinish: () => reset(),
         });
@@ -89,8 +86,8 @@ export default function DeleteList({ list }: DeleteListProps) {
                             </Button>
                         </DialogClose>
 
-                        <Button 
-                            variant="destructive" 
+                        <Button
+                            variant="destructive"
                             disabled={processing || !isNameMatch}
                             type="submit"
                         >

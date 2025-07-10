@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { PencilLineIcon, TrashIcon } from 'lucide-react';
 import DeleteList from '@/components/lists/delete-list';
 import { AddNewList } from '@/components/lists/add-new-list';
+import { EditList } from '@/components/lists/edit-list';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -55,11 +56,18 @@ export default function NewsletterLists({ lists }: {
                                 <TableCell>
                                     {list.from_email}
                                 </TableCell>
-                                <TableCell className="space-x-2">
-                                    <DeleteList list={list} />
-                                    <Button>
-                                        <PencilLineIcon />
-                                    </Button>
+                                <TableCell>
+                                    <div className="space-x-2">
+                                        <EditList list={list} />
+                                        <DeleteList list={list} />
+                                        <Button
+                                            variant="outline"
+                                            asChild>
+                                            <Link href={route('lists.show', list.id)}>
+                                                Show
+                                            </Link>
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}
