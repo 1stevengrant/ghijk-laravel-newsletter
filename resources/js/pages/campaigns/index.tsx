@@ -113,14 +113,16 @@ export default function CampaignsIndex({ campaigns }: {
                                                 View
                                             </Link>
                                         </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            asChild>
-                                            <Link href={route('campaigns.edit', campaign.id)}>
-                                                Edit
-                                            </Link>
-                                        </Button>
+                                        {campaign.can_edit && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                asChild>
+                                                <Link href={route('campaigns.edit', campaign.id)}>
+                                                    Edit
+                                                </Link>
+                                            </Button>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

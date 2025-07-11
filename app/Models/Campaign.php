@@ -71,6 +71,11 @@ class Campaign extends Model
         return $this->status === self::STATUS_SENT;
     }
 
+    public function canEdit(): bool
+    {
+        return ! $this->isSent();
+    }
+
     public function canSend(): bool
     {
         if (! in_array($this->status, [self::STATUS_DRAFT, self::STATUS_SCHEDULED])) {

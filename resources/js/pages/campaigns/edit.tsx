@@ -90,6 +90,13 @@ export default function EditCampaign({ campaign, lists }: {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {!campaign.can_edit && (
+                            <div className="mb-4 p-4 border border-yellow-200 bg-yellow-50 rounded-md">
+                                <p className="text-yellow-800">
+                                    This campaign cannot be edited because it has already been sent.
+                                </p>
+                            </div>
+                        )}
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <Label htmlFor="name">Campaign Name</Label>
@@ -99,6 +106,7 @@ export default function EditCampaign({ campaign, lists }: {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     placeholder="Enter campaign name"
+                                    disabled={!campaign.can_edit}
                                 />
                                 {errors.name && <InputError message={errors.name} />}
                             </div>
@@ -111,6 +119,7 @@ export default function EditCampaign({ campaign, lists }: {
                                     value={data.subject}
                                     onChange={(e) => setData('subject', e.target.value)}
                                     placeholder="Enter email subject"
+                                    disabled={!campaign.can_edit}
                                 />
                                 {errors.subject && <InputError message={errors.subject} />}
                             </div>
@@ -119,8 +128,8 @@ export default function EditCampaign({ campaign, lists }: {
                                 <Label htmlFor="content">Email Content</Label>
                                 <Tabs value={contentType} onValueChange={(value) => setContentType(value as 'simple' | 'blocks')}>
                                     <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="simple">Simple Editor</TabsTrigger>
-                                        <TabsTrigger value="blocks">Block Builder</TabsTrigger>
+                                        <TabsTrigger value="simple" disabled={!campaign.can_edit}>Simple Editor</TabsTrigger>
+                                        <TabsTrigger value="blocks" disabled={!campaign.can_edit}>Block Builder</TabsTrigger>
                                     </TabsList>
 
                                     <TabsContent value="simple" className="mt-4">
@@ -130,6 +139,7 @@ export default function EditCampaign({ campaign, lists }: {
                                             onChange={(e) => setData('content', e.target.value)}
                                             placeholder="Enter your email content here..."
                                             rows={8}
+                                            disabled={!campaign.can_edit}
                                         />
                                     </TabsContent>
 
@@ -149,6 +159,7 @@ export default function EditCampaign({ campaign, lists }: {
                                 <Select
                                     value={data.newsletter_list_id}
                                     onValueChange={(value) => setData('newsletter_list_id', value)}
+                                    disabled={!campaign.can_edit}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a newsletter list" />
@@ -169,6 +180,7 @@ export default function EditCampaign({ campaign, lists }: {
                                 <Select
                                     value={data.status}
                                     onValueChange={(value) => setData('status', value)}
+                                    disabled={!campaign.can_edit}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select status" />
@@ -189,6 +201,7 @@ export default function EditCampaign({ campaign, lists }: {
                                         type="datetime-local"
                                         value={data.scheduled_at}
                                         onChange={(e) => setData('scheduled_at', e.target.value)}
+                                        disabled={!campaign.can_edit}
                                     />
                                     {errors.scheduled_at &&
                                         <InputError message={errors.scheduled_at} />}
@@ -196,7 +209,7 @@ export default function EditCampaign({ campaign, lists }: {
                             )}
 
                             <div className="flex gap-2">
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing || !campaign.can_edit}>
                                     Update Campaign
                                 </Button>
                                 <Button variant="outline" asChild>

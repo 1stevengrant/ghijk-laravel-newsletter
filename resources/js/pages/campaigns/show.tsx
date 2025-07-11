@@ -52,22 +52,20 @@ export default function ShowCampaign({ campaign }: {
                         </Badge>
                     </div>
                     <div className="flex gap-2">
-                        {canSend ? (
+                        {canSend && (
                             <form onSubmit={handleSend}>
                                 <Button type="submit" disabled={processing}>
                                     Send Now
                                 </Button>
                             </form>
-                        ) : (
-                            <Button disabled title="Campaign cannot be sent (check status and subscriber count)">
-                                Send Now
+                        )}
+                        {campaign.can_edit && (
+                            <Button variant="outline" asChild>
+                                <Link href={route('campaigns.edit', campaign.id)}>
+                                    Edit
+                                </Link>
                             </Button>
                         )}
-                        <Button variant="outline" asChild>
-                            <Link href={route('campaigns.edit', campaign.id)}>
-                                Edit
-                            </Link>
-                        </Button>
                     </div>
                 </div>
 
