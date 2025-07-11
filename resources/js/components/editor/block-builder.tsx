@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import FileUpload from '@/components/ui/file-upload';
+// import FileUpload from '@/components/ui/file-upload';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import {
   DndContext,
@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import BlockEditor from './block-editor';
+import ImageGallery from '@/components/ui/image-gallery';
 
 export type BlockType = 'text' | 'image' | 'quote' | 'list' | 'separator';
 
@@ -48,6 +49,7 @@ export interface Block {
   type: BlockType;
   content: string;
   settings?: {
+    imageId?: number;
     imageUrl?: string;
     imageAlt?: string;
     imagePath?: string;
@@ -257,23 +259,54 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
         return (
           <div className="space-y-4">
             <div>
-              <Label className="sr-only">Upload Image</Label>
-              <FileUpload
-                accept="image/*"
-                maxSize={10 * 1024 * 1024} // 10MB
-                uploadUrl={campaignId ? `/campaigns/${campaignId}/images/upload` : '/images/upload'}
-                onUpload={(response) => updateBlock(block.id, {
+              <Label>Select or Upload Image</Label>
+              <ImageGallery
+                campaignId={campaignId}
+                selectedImageId={block.settings?.imageId}
+                onImageSelect={(image) => updateBlock(block.id, {
                   settings: {
                     ...block.settings,
-                    imageUrl: response.url,
-                    imagePath: response.path
+                    imageId: image.id,
+                    imageUrl: image.url,
+                    imagePath: image.path,
+                    imageAlt: image.alt_text || block.settings?.imageAlt || ''
                   }
                 })}
-                onError={(error) => alert(error)}
-              />
+              >
+                <Button variant="outline" className="w-full">
+                  {block.settings?.imageUrl ? 'Change Image' : 'Select Image'}
+                </Button>
+              </ImageGallery>
             </div>
+            {block.settings?.imageUrl && (
+              <div className="space-y-2">
+                <div className="relative">
+                  <img
+                    src={block.settings.imageUrl}
+                    alt={block.settings.imageAlt || 'Selected image'}
+                    className="max-w-full h-auto rounded-lg border"
+                    style={{ maxHeight: '200px' }}
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => updateBlock(block.id, {
+                    settings: {
+                      ...block.settings,
+                      imageId: undefined,
+                      imageUrl: undefined,
+                      imagePath: undefined,
+                      imageAlt: ''
+                    }
+                  })}
+                >
+                  Remove Image
+                </Button>
+              </div>
+            )}
             <div>
-              <Label className="sr-only" htmlFor={`image-alt-${block.id}`}>Alt Text</Label>
+              <Label htmlFor={`image-alt-${block.id}`}>Alt Text</Label>
               <Input
                 id={`image-alt-${block.id}`}
                 type="text"

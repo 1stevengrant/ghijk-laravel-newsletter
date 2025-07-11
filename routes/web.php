@@ -26,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('campaigns/{campaign}/content', [CampaignController::class, 'content'])->name('campaigns.content');
     Route::put('campaigns/{campaign}/content', [CampaignController::class, 'updateContent'])->name('campaigns.content.update');
     Route::post('campaigns/{campaign}/send', SendCampaignController::class)->name('campaigns.send');
+    Route::get('images', [ImageUploadController::class, 'index'])->name('images.index');
     Route::post('images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
     Route::post('campaigns/{campaign}/images/upload', [ImageUploadController::class, 'store'])->name('campaigns.images.upload');
     Route::delete('images', [ImageUploadController::class, 'destroy'])->name('images.destroy');

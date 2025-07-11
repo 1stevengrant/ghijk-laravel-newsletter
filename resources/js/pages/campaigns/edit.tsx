@@ -97,7 +97,7 @@ export default function EditCampaign({ campaign, lists }: {
                                 </p>
                             </div>
                         )}
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit}>
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="col-span-2">
                                     <Label htmlFor="content">Email Content</Label>
@@ -131,7 +131,7 @@ export default function EditCampaign({ campaign, lists }: {
                                     </Tabs>
                                     {errors.content && <InputError message={errors.content} />}
                                 </div>
-                                <div>
+                                <div className="space-y-4">
                                     <div>
                                         <Label htmlFor="name">Campaign Name</Label>
                                         <Input

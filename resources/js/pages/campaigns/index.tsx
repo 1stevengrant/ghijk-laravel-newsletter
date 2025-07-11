@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -12,18 +12,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import SendNow from '@/components/campaigns/send-now';
+import DeleteCampaignButton from '@/components/campaigns/delete-campaign-button';
 import { useEcho } from '@laravel/echo-react';
 import { useState } from 'react';
-import { EyeIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
+import { EyeIcon, PencilIcon, PlusIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,50 +35,6 @@ const statusColors = {
     sent: 'bg-green-100 text-green-800',
 };
 
-function DeleteCampaignButton({ campaign }: { campaign: App.Data.CampaignData }) {
-    const { delete: destroy, processing } = useForm();
-    const [open, setOpen] = useState(false);
-
-    const handleDelete = () => {
-        destroy(route('campaigns.destroy', campaign.id), {
-            onSuccess: () => setOpen(false),
-        });
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                    <Trash2Icon />
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Delete Campaign</DialogTitle>
-                    <DialogDescription>
-                        Are you sure you want to delete "{campaign.name}"? This action cannot be undone.
-                    </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button 
-                        variant="destructive" 
-                        onClick={handleDelete}
-                        disabled={processing}
-                    >
-                        {processing ? 'Deleting...' : 'Delete Campaign'}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    );
-}
 
 export default function CampaignsIndex({ campaigns }: {
     campaigns: App.Data.CampaignData[]
