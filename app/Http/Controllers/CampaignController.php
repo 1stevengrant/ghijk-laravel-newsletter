@@ -176,6 +176,11 @@ class CampaignController extends Controller
      */
     public function destroy(Campaign $campaign)
     {
+        if (! $campaign->canDelete()) {
+            return redirect()->route('campaigns.show', $campaign)
+                ->with('error', 'Only draft campaigns can be deleted.');
+        }
+
         $campaign->delete();
 
         return redirect()->route('campaigns.index')->with('success', 'Campaign deleted successfully.');

@@ -76,6 +76,11 @@ class Campaign extends Model
         return ! $this->isSent();
     }
 
+    public function canDelete(): bool
+    {
+        return $this->isDraft();
+    }
+
     public function canSend(): bool
     {
         if (! in_array($this->status, [self::STATUS_DRAFT, self::STATUS_SCHEDULED])) {

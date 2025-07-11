@@ -31,15 +31,17 @@ class CampaignData extends Data
         public float $bounce_rate,
         public bool $can_send,
         public bool $can_edit,
+        public bool $can_delete,
         public ?array $blocks = null,
         public ?NewsletterListData $newsletter_list = null,
     ) {}
 
     public static function fromModel(Campaign $campaign): self
     {
-        // Calculate can_send and can_edit based on the campaign model
+        // Calculate can_send, can_edit, and can_delete based on the campaign model
         $canSend = $campaign->canSend();
         $canEdit = $campaign->canEdit();
+        $canDelete = $campaign->canDelete();
 
         return new self(
             id: $campaign->id,
@@ -63,6 +65,7 @@ class CampaignData extends Data
             bounce_rate: $campaign->bounce_rate,
             can_send: $canSend,
             can_edit: $canEdit,
+            can_delete: $canDelete,
             blocks: $campaign->blocks,
             newsletter_list: $campaign->relationLoaded('newsletterList') ?
                 NewsletterListData::from($campaign->newsletterList) : null,

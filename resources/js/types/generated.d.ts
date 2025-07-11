@@ -21,6 +21,7 @@ unsubscribe_rate: number;
 bounce_rate: number;
 can_send: boolean;
 can_edit: boolean;
+can_delete: boolean;
 blocks: Array<any> | null;
 newsletter_list: App.Data.NewsletterListData | null;
 };

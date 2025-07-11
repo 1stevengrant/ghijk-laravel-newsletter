@@ -3,8 +3,18 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FormEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FormEvent, useState } from 'react';
+import { PencilIcon, SendIcon, Trash2Icon } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 
 const statusColors = {
     draft: 'bg-gray-100 text-gray-800',
@@ -32,10 +42,18 @@ export default function ShowCampaign({ campaign }: {
     ];
 
     const { post, processing } = useForm();
+    const { delete: destroy, processing: deleting } = useForm();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const handleSend = (e: FormEvent) => {
         e.preventDefault();
         post(route('campaigns.send', campaign.id));
+    };
+
+    const handleDelete = () => {
+        destroy(route('campaigns.destroy', campaign.id), {
+            onSuccess: () => setDeleteDialogOpen(false),
+        });
     };
 
     const canSend = campaign.can_send;
@@ -54,17 +72,49 @@ export default function ShowCampaign({ campaign }: {
                     <div className="flex gap-2">
                         {canSend && (
                             <form onSubmit={handleSend}>
-                                <Button type="submit" disabled={processing}>
-                                    Send Now
+                                <Button className="bg-green-600 text-white hover:bg-green-700" type="submit" disabled={processing}>
+                                    <SendIcon />
                                 </Button>
                             </form>
                         )}
                         {campaign.can_edit && (
                             <Button variant="outline" asChild>
                                 <Link href={route('campaigns.edit', campaign.id)}>
-                                    Edit
+                                    <PencilIcon />
                                 </Link>
                             </Button>
+                        )}
+                        {campaign.can_delete && (
+                            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        variant="destructive"
+
+                                    >
+                                        <Trash2Icon className="w-4 h-4" />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Delete Campaign</DialogTitle>
+                                        <DialogDescription>
+                                            Are you sure you want to delete "{campaign.name}"? This action cannot be undone.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            onClick={handleDelete}
+                                            disabled={deleting}
+                                        >
+                                            {deleting ? 'Deleting...' : 'Delete Campaign'}
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         )}
                     </div>
                 </div>
