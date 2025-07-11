@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'newsletter_list_id' => 3,
         ]);
 
-        Campaign::factory()->count(3)->create();
+        Campaign::factory()->count(200)->create();
 
     }
 }

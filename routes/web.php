@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EmailTrackingController;
+use App\Http\Controllers\SendCampaignController;
 use App\Http\Controllers\NewsletterListController;
+use App\Http\Controllers\Email\TrackEmailOpenController;
 use App\Http\Controllers\NewsletterSubscriberController;
+use App\Http\Controllers\Email\TrackEmailClickController;
+use App\Http\Controllers\Email\UnsubscribeEmailController;
 
 Route::get('/', HomeController::class)->name('home');
 
@@ -16,16 +19,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->names('lists');
     Route::resource('lists.subscribers', NewsletterSubscriberController::class)
-        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])
+        ->only(['store', 'destroy'])
         ->names('subscribers');
     Route::resource('campaigns', CampaignController::class);
-    Route::post('campaigns/{campaign}/send', [CampaignController::class, 'send'])->name('campaigns.send');
+    Route::post('campaigns/{campaign}/send', SendCampaignController::class)->name('campaigns.send');
 });
 
 // Email tracking routes (no middleware required)
-Route::get('track/open/{campaign}/{subscriber}', [EmailTrackingController::class, 'trackOpen'])->name('campaign.track.open');
-Route::get('track/click/{campaign}/{subscriber}', [EmailTrackingController::class, 'trackClick'])->name('campaign.track.click');
-Route::get('unsubscribe', [EmailTrackingController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+Route::get('track/open/{campaign}/{subscriber}', TrackEmailOpenController::class)->name('campaign.track.open');
+Route::get('track/click/{campaign}/{subscriber}', TrackEmailClickController::class)->name('campaign.track.click');
+Route::get('unsubscribe', UnsubscribeEmailController::class)->name('newsletter.unsubscribe');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
