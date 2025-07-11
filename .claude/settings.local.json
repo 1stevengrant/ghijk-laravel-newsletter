@@ -16,7 +16,9 @@
       "WebFetch(domain:image.intervention.io)",
       "Bash(pkill:*)",
       "Bash(grep:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(php:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": []
   }

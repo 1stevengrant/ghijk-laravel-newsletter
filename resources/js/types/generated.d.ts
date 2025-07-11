@@ -2,7 +2,7 @@ declare namespace App.Data {
 export type BlockData = {
 id: string;
 type: string;
-content: string;
+content: string | null;
 settings: App.Data.BlockSettingsData | null;
 };
 export type BlockSettingsData = {
