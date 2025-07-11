@@ -14,7 +14,7 @@ class NewsletterListController extends Controller
     public function index()
     {
         return inertia('newsletter-lists', [
-            'lists' => NewsletterListData::collect(NewsletterList::query()->get()),
+            'lists' => NewsletterListData::collect(NewsletterList::query()->withCount('subscribers')->get()),
         ]);
     }
 

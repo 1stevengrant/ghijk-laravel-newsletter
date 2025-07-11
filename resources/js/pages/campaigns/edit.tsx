@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormEvent } from 'react';
+import InputError from '@/components/input-error';
 
 export default function EditCampaign({ campaign, lists }: {
     campaign: App.Data.CampaignData;
@@ -38,7 +39,7 @@ export default function EditCampaign({ campaign, lists }: {
         content: campaign.content || '',
         newsletter_list_id: campaign.newsletter_list_id.toString(),
         status: campaign.status,
-        scheduled_at: campaign.scheduled_at ? campaign.scheduled_at.slice(0, 16) : '',
+        scheduled_at: campaign.scheduled_at ? campaign.scheduled_at.slice(0, 16) : ''
     });
 
     const handleSubmit = (e: FormEvent) => {
@@ -68,7 +69,7 @@ export default function EditCampaign({ campaign, lists }: {
                                     onChange={(e) => setData('name', e.target.value)}
                                     placeholder="Enter campaign name"
                                 />
-                                {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                                {errors.name && <InputError message={errors.name} />}
                             </div>
 
                             <div>
@@ -80,7 +81,7 @@ export default function EditCampaign({ campaign, lists }: {
                                     onChange={(e) => setData('subject', e.target.value)}
                                     placeholder="Enter email subject"
                                 />
-                                {errors.subject && <p className="text-red-500 text-sm">{errors.subject}</p>}
+                                {errors.subject && <InputError message={errors.subject} />}
                             </div>
 
                             <div>
@@ -92,7 +93,7 @@ export default function EditCampaign({ campaign, lists }: {
                                     placeholder="Enter your email content here..."
                                     rows={8}
                                 />
-                                {errors.content && <p className="text-red-500 text-sm">{errors.content}</p>}
+                                {errors.content && <InputError message={errors.content} />}
                             </div>
 
                             <div>
@@ -112,7 +113,7 @@ export default function EditCampaign({ campaign, lists }: {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {errors.newsletter_list_id && <p className="text-red-500 text-sm">{errors.newsletter_list_id}</p>}
+                                {errors.newsletter_list_id && <InputError message={errors.newsletter_list_id} />}
                             </div>
 
                             <div>
@@ -129,7 +130,7 @@ export default function EditCampaign({ campaign, lists }: {
                                         <SelectItem value="scheduled">Scheduled</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
+                                {errors.status && <InputError message={errors.status} />}
                             </div>
 
                             {data.status === 'scheduled' && (
@@ -141,7 +142,8 @@ export default function EditCampaign({ campaign, lists }: {
                                         value={data.scheduled_at}
                                         onChange={(e) => setData('scheduled_at', e.target.value)}
                                     />
-                                    {errors.scheduled_at && <p className="text-red-500 text-sm">{errors.scheduled_at}</p>}
+                                    {errors.scheduled_at &&
+                                        <InputError message={errors.scheduled_at} />}
                                 </div>
                             )}
 

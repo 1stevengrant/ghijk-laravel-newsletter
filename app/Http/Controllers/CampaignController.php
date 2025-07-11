@@ -130,9 +130,12 @@ class CampaignController extends Controller
             return back()->with('error', 'Cannot send campaign to a list with no subscribers.');
         }
 
+        // Update campaign status to sending immediately
+        $campaign->update(['status' => 'sending']);
+
         // Dispatch the job to send the campaign
         SendCampaignJob::dispatch($campaign);
 
-        return redirect()->route('campaigns.show', $campaign)->with('success', 'Campaign is being sent.');
+        return redirect()->route('campaigns.index')->with('success', 'Campaign is being sent.');
     }
 }

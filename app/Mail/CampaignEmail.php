@@ -72,6 +72,7 @@ class CampaignEmail extends Mailable
     {
         return route('newsletter.unsubscribe', [
             'token' => $this->subscriber->unsubscribe_token,
+            'campaign' => $this->campaign->id,
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Models\NewsletterSubscriber;
 
 class EmailTrackingController extends Controller
@@ -12,10 +13,23 @@ class EmailTrackingController extends Controller
     /**
      * Track email opens via tracking pixel
      */
-    public function trackOpen(Campaign $campaign, NewsletterSubscriber $subscriber)
+    public function trackOpen(Request $request, Campaign $campaign, NewsletterSubscriber $subscriber)
     {
-        // Increment open count for the campaign
-        $campaign->increment('opens');
+        // Track unique opens - only insert if this combination doesn't exist
+        $wasInserted = DB::table('campaign_opens')->insertOrIgnore([
+            'campaign_id' => $campaign->id,
+            'newsletter_subscriber_id' => $subscriber->id,
+            'opened_at' => now(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Only increment the campaign opens count if this is a new unique open
+        if ($wasInserted) {
+            $campaign->increment('opens');
+        }
 
         // Create a 1x1 transparent pixel
         $pixel = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
@@ -53,6 +67,7 @@ class EmailTrackingController extends Controller
     public function unsubscribe(Request $request)
     {
         $token = $request->query('token');
+        $campaignId = $request->query('campaign');
 
         if (! $token) {
             abort(404);
@@ -66,6 +81,14 @@ class EmailTrackingController extends Controller
 
         // Update subscriber status to unsubscribed
         $subscriber->update(['status' => 'unsubscribed']);
+
+        // If campaign ID is provided, increment the unsubscribe count for that campaign
+        if ($campaignId) {
+            $campaign = Campaign::find($campaignId);
+            if ($campaign) {
+                $campaign->increment('unsubscribes');
+            }
+        }
 
         return view('emails.unsubscribed', compact('subscriber'));
     }

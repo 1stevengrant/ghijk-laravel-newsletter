@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import SendNow from '@/components/campaigns/send-now';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -83,6 +84,9 @@ export default function CampaignsIndex({ campaigns }: {
                                 </TableCell>
                                 <TableCell>
                                     <div className="space-x-2">
+                                        {campaign.can_send && (
+                                            <SendNow campaign={campaign} />
+                                        )}
                                         <Button
                                             variant="outline"
                                             size="sm"

@@ -31,9 +31,6 @@ class SendCampaignJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // Update campaign status to sending
-        $this->campaign->update(['status' => 'sending']);
-
         $subscribers = $this->campaign->newsletterList->subscribers()
             ->where('status', 'subscribed')
             ->get();

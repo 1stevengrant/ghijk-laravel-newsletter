@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Campaign extends Model
@@ -16,52 +17,52 @@ class Campaign extends Model
         'scheduled_at' => 'datetime',
     ];
 
-    public function newsletterList()
+    public function newsletterList(): BelongsTo
     {
         return $this->belongsTo(NewsletterList::class);
     }
 
-    public function getOpenRateAttribute()
+    public function getOpenRateAttribute(): float|int
     {
         return $this->sent_count > 0 ? round(($this->opens / $this->sent_count) * 100, 2) : 0;
     }
 
-    public function getClickRateAttribute()
+    public function getClickRateAttribute(): float|int
     {
         return $this->sent_count > 0 ? round(($this->clicks / $this->sent_count) * 100, 2) : 0;
     }
 
-    public function getUnsubscribeRateAttribute()
+    public function getUnsubscribeRateAttribute(): float|int
     {
         return $this->sent_count > 0 ? round(($this->unsubscribes / $this->sent_count) * 100, 2) : 0;
     }
 
-    public function getBounceRateAttribute()
+    public function getBounceRateAttribute(): float|int
     {
         return $this->sent_count > 0 ? round(($this->bounces / $this->sent_count) * 100, 2) : 0;
     }
 
-    public function isDraft()
+    public function isDraft(): bool
     {
         return $this->status === 'draft';
     }
 
-    public function isScheduled()
+    public function isScheduled(): bool
     {
         return $this->status === 'scheduled';
     }
 
-    public function isSending()
+    public function isSending(): bool
     {
         return $this->status === 'sending';
     }
 
-    public function isSent()
+    public function isSent(): bool
     {
         return $this->status === 'sent';
     }
 
-    public function canSend()
+    public function canSend(): bool
     {
         if (! in_array($this->status, ['draft', 'scheduled'])) {
             return false;

@@ -16,5 +16,6 @@ class NewsletterListData extends Data
         public string $from_name,
         /** @var array<NewsletterSubscriberData> */
         public array $subscribers = [],
+        public int $subscribers_count = 0,
     ) {}
 }

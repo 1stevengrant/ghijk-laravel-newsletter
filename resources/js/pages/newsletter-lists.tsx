@@ -47,7 +47,7 @@ export default function NewsletterLists({ lists }: {
                     <TableBody>
                         {lists.map((list: App.Data.NewsletterListData) => (
                             <TableRow key={list.id}>
-                                <TableCell>{list.name}</TableCell>
+                                <TableCell>{list.name} ({list.subscribers_count})</TableCell>
                                 <TableCell>
                                     {list.from_name}
                                 </TableCell>

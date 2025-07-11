@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Campaign;
 use App\Models\NewsletterList;
 use Illuminate\Database\Seeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -23,9 +24,17 @@ class DatabaseSeeder extends Seeder
         ]);
 
         NewsletterList::factory()->count(3)->create();
-        NewsletterSubscriber::factory()->count(200)->create([
+        NewsletterSubscriber::factory()->count(10)->create([
             'newsletter_list_id' => 1,
         ]);
+        NewsletterSubscriber::factory()->count(20)->create([
+            'newsletter_list_id' => 2,
+        ]);
+        NewsletterSubscriber::factory()->count(30)->create([
+            'newsletter_list_id' => 3,
+        ]);
+
+        Campaign::factory()->count(3)->create();
 
     }
 }

@@ -27,6 +27,7 @@ description: string | null;
 from_email: string;
 from_name: string;
 subscribers: Array<App.Data.NewsletterSubscriberData>;
+subscribers_count: number;
 };
 export type NewsletterSubscriberData = {
 id: number;
