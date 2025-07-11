@@ -20,7 +20,7 @@ class NewsletterSubscriberFactory extends Factory
             'email' => fake()->unique()->safeEmail,
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'subscribed_at' => now(),
+            'subscribed_at' => fake()->dateTimeBetween(now()->subYears(5), now()),
             'verification_token' => fake()->uuid,
         ];
     }

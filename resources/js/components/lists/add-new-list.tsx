@@ -15,11 +15,12 @@ import React, { useState } from 'react';
 
 export const AddNewList = () => {
     const [open, setOpen] = useState(false);
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm<Required<{
-        name: string;
-        from_name: string;
-        from_email: string
-    }>>({ name: '', from_name: '', from_email: '' });
+    const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
+        name: '',
+        description: '',
+        from_name: '',
+        from_email: ''
+    });
 
     const createList = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -63,7 +64,22 @@ export const AddNewList = () => {
                         <InputError message={errors.name} />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="name" className="sr-only">
+                        <Label htmlFor="description" className="sr-only">
+                            Description
+                        </Label>
+
+                        <Input
+                            id="description"
+                            name="description"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            placeholder="description (optional)"
+                        />
+
+                        <InputError message={errors.description} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="from_name" className="sr-only">
                             From Name
                         </Label>
 

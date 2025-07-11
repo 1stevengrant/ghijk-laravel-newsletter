@@ -11,4 +11,9 @@ class NewsletterList extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function subscribers()
+    {
+        return $this->hasMany(NewsletterSubscriber::class);
+    }
 }

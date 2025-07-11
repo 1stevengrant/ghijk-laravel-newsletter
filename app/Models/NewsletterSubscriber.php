@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\NewsletterSubscriberFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class NewsletterSubscriber extends Model
 {
@@ -25,5 +26,10 @@ class NewsletterSubscriber extends Model
                 $subscriber->verification_token = Str::uuid()->toString();
             }
         });
+    }
+
+    public function lists(): BelongsToMany
+    {
+        return $this->belongsToMany(NewsletterList::class);
     }
 }

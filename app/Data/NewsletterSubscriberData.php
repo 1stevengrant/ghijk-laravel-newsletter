@@ -6,7 +6,7 @@ use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-class NewsletterSubscribersData extends Data
+class NewsletterSubscriberData extends Data
 {
     public function __construct(
         public int $id,

@@ -4,8 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\NewsletterList;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\NewsletterSubscriber;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,5 +23,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         NewsletterList::factory()->count(3)->create();
+        NewsletterSubscriber::factory()->count(200)->create([
+            'newsletter_list_id' => 1,
+        ]);
+
     }
 }

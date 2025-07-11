@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { PauseIcon, PlayIcon, TrashIcon } from 'lucide-react';
-import { AddNew } from '@/components/subcribers/add-new';
+import { AddNew } from '@/components/subscribers/add-new';
 
 export default function NewsletterSubscribers({ newsletterSubscribers }: {
     newsletterSubscribers: App.Data.NewsletterSubscribersData[]

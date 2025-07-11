@@ -13,21 +13,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
 import React, { useState } from 'react';
-import { PencilIcon } from 'lucide-react';
 
-interface EditListProps {
-    list: {
-        id: number;
-        name: string;
-        from_name: string;
-        from_email: string;
-    };
-}
 
-export const EditList = ({ list }: EditListProps) => {
+export const EditList = ({ list }: { list: App.Data.NewsletterListData }) => {
     const [open, setOpen] = useState(false);
     const { data, setData, put, processing, errors, reset, clearErrors } = useForm({
         name: list.name,
+        description: list.description || '',
         from_name: list.from_name,
         from_email: list.from_email
     });
@@ -73,6 +65,21 @@ export const EditList = ({ list }: EditListProps) => {
                         />
 
                         <InputError message={errors.name} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="description">
+                            Description
+                        </Label>
+
+                        <Input
+                            id="description"
+                            name="description"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            placeholder="description (optional)"
+                        />
+
+                        <InputError message={errors.description} />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="from_name">

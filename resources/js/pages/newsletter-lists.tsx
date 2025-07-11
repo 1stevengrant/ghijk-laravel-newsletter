@@ -10,7 +10,6 @@ import {
     TableRow
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { PencilLineIcon, TrashIcon } from 'lucide-react';
 import DeleteList from '@/components/lists/delete-list';
 import { AddNewList } from '@/components/lists/add-new-list';
 import { EditList } from '@/components/lists/edit-list';
@@ -27,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function NewsletterLists({ lists }: {
-    lists: App.Data.NewsletterListsData[]
+    lists: App.Data.NewsletterListData[]
 }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -37,7 +36,6 @@ export default function NewsletterLists({ lists }: {
                     <AddNewList />
                 </div>
                 <Table>
-                    {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
                     <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
@@ -47,7 +45,7 @@ export default function NewsletterLists({ lists }: {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {lists.map((list: App.Data.NewsletterListsData) => (
+                        {lists.map((list: App.Data.NewsletterListData) => (
                             <TableRow key={list.id}>
                                 <TableCell>{list.name}</TableCell>
                                 <TableCell>

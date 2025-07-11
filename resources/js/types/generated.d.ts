@@ -1,12 +1,13 @@
 declare namespace App.Data {
-export type NewsletterListsData = {
+export type NewsletterListData = {
 id: number;
 name: string;
 description: string | null;
 from_email: string;
 from_name: string;
+subscribers: Array<App.Data.NewsletterSubscriberData>;
 };
-export type NewsletterSubscribersData = {
+export type NewsletterSubscriberData = {
 id: number;
 email: string;
 first_name: string | null;

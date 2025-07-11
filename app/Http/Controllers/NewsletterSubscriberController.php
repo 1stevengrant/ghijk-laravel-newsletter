@@ -2,22 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NewsletterList;
 use App\Models\NewsletterSubscriber;
-use App\Data\NewsletterSubscribersData;
+use Illuminate\Http\Request;
 
 class NewsletterSubscriberController extends Controller
 {
-    public function index()
+    public function store(Request $request)
     {
-        return inertia('newsletter-subscribers', [
-            'newsletterSubscribers' => NewsletterSubscribersData::collect(NewsletterSubscriber::query()->get()),
+        $validated = $request->validate([
+            'email' => 'required|string|email|max:255',
+            'first_name' => 'string|max:255',
+            'last_name' => 'string|max:255',
+            'newsletter_list_id' => 'required|integer|exists:newsletter_lists,id'
         ]);
+
+        NewsletterSubscriber::create($validated);
+
+        return to_route('lists.show', $validated['newsletter_list_id'])->with('success', 'Subscriber created.');
     }
 
-    public function destroy(NewsletterSubscriber $newsletterSubscriber)
+    public function destroy(NewsletterSubscriber $subscriber)
     {
-        $newsletterSubscriber->delete();
+        $subscriber->delete();
 
-        return to_route('subscribers.index')->with('success', 'Subscriber deleted.');
+        return to_route('lists.show', $subscriber->newsletter_list_id)->with('success', 'Subscriber deleted.');
     }
 }
