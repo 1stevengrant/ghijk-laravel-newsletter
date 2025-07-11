@@ -40,7 +40,9 @@ class NewsletterListController extends Controller
      */
     public function show(NewsletterList $list)
     {
-        $list->load('subscribers');
+        $list->load(['subscribers' => function ($query) {
+            $query->orderBy('subscribed_at', 'desc');
+        }]);
 
         return inertia('newsletter-list-show', [
             'list' => NewsletterListData::from($list),
