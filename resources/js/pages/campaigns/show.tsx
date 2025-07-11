@@ -212,6 +212,20 @@ export default function ShowCampaign({ campaign }: {
                         </dl>
                     </CardContent>
                 </Card>
+
+                {campaign.content && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Email Content</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div 
+                                className="prose prose-sm max-w-none"
+                                dangerouslySetInnerHTML={{ __html: campaign.content }}
+                            />
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </AppLayout>
     );
