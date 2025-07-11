@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import url(https://fonts.bunny.net/css?family=public-sans:400,600,900);
 @plugin "@tailwindcss/typography";
 @plugin 'tailwindcss-animate';
 @source '../views';
@@ -7,8 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);

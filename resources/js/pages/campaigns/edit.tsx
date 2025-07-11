@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BlockBuilder, { type Block } from '@/components/editor/block-builder';
+import EmailPreview from '@/components/campaigns/email-preview';
 import { FormEvent, useState } from 'react';
 import InputError from '@/components/input-error';
 import { convertBlocksToHtml, initializeBlocksFromCampaign, shouldUseBlocksMode } from '@/utils/block-utils';
@@ -70,7 +71,17 @@ export default function EditCampaign({ campaign, lists }: {
             submitData = {
                 ...submitData,
                 content: htmlContent,
-                blocks: blocks
+                blocks: blocks.map(block => ({
+                    ...block,
+                    settings: block.settings ? {
+                        imageId: block.settings.imageId ?? null,
+                        imageUrl: block.settings.imageUrl ?? null,
+                        imageAlt: block.settings.imageAlt ?? null,
+                        imagePath: block.settings.imagePath ?? null,
+                        listType: block.settings.listType ?? null,
+                        quoteAuthor: block.settings.quoteAuthor ?? null,
+                    } : null
+                }))
             };
         }
 
@@ -219,6 +230,11 @@ export default function EditCampaign({ campaign, lists }: {
                                 <Button type="submit" disabled={processing || !campaign.can_edit}>
                                     Update Campaign
                                 </Button>
+                                <EmailPreview 
+                                    campaign={campaign}
+                                    blocks={contentType === 'blocks' ? blocks : []}
+                                    content={contentType === 'simple' ? data.content : ''}
+                                />
                                 <Button variant="outline" asChild>
                                     <Link href={route('campaigns.show', campaign.id)}>
                                         Cancel

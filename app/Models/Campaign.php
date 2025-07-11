@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\QueryBuilders\CampaignQueryBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -16,7 +17,7 @@ class Campaign extends Model
 
     public const STATUS_DRAFT = 'draft';
 
-    public const STATUS_SCHEDULED = 'closed';
+    public const STATUS_SCHEDULED = 'scheduled';
 
     protected $guarded = [];
 
@@ -25,6 +26,11 @@ class Campaign extends Model
         'scheduled_at' => 'datetime',
         'blocks' => 'array',
     ];
+
+    public function newEloquentBuilder($query): CampaignQueryBuilder
+    {
+        return new CampaignQueryBuilder($query);
+    }
 
     public function newsletterList(): BelongsTo
     {

@@ -27,6 +27,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Unit tests are in `tests/Unit/`
 - Tests include authentication, settings, and core functionality
 
+## Newsletter Application Overview
+
+This is a comprehensive newsletter management system built with Laravel and React, featuring:
+
+### Core Features
+- **Newsletter List Management**: Create and manage multiple newsletter lists
+- **Subscriber Management**: Add, import, and manage subscribers with subscription tracking
+- **Campaign Management**: Create, schedule, and send email campaigns
+- **Visual Email Editor**: Rich text editor with block-based content creation
+- **Email Analytics**: Track opens, clicks, unsubscribes, and bounce rates
+- **Responsive Design**: Modern UI built with Tailwind CSS and shadcn/ui
+
+### Newsletter Models & Relationships
+- **NewsletterList**: Container for subscriber groups
+- **NewsletterSubscriber**: Individual subscribers with verification and unsubscribe tokens
+- **Campaign**: Email campaigns with status tracking (draft, scheduled, sending, sent)
+- **Image**: File uploads for campaign content
+
+### Campaign System
+- **Status Management**: Draft → Scheduled → Sending → Sent workflow
+- **Queue-Based Sending**: Background job processing via `SendCampaignJob`
+- **Email Tracking**: Open/click tracking with unique tokens
+- **Analytics**: Real-time campaign performance metrics
+
+### Email Features
+- **Visual Editor**: TipTap-based rich text editor with formatting options
+- **Block System**: Reusable content blocks for email templates
+- **Image Management**: Upload and manage campaign images
+- **Personalization**: Dynamic content based on subscriber data
+- **Unsubscribe Handling**: Automated unsubscribe link generation
+
 ## Architecture Overview
 
 ### Tech Stack
@@ -36,8 +67,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **UI Components**: Radix UI primitives with shadcn/ui patterns
 - **Build Tool**: Vite with Laravel plugin
 - **Testing**: Pest (PHP), ESLint + Prettier (JS/TS)
+- **Email**: Laravel Mail with queue support
+- **Database**: SQLite for development
 
 ### Key Patterns
+
+#### Newsletter Architecture
+- **Data Transfer Objects**: Campaign, Subscriber, and List data objects
+- **Query Builders**: Custom query builder for Campaign model
+- **Event-Driven**: Campaign status changes broadcast via events
+- **Job Queues**: Background email sending with retry logic
+- **Email Tracking**: Pixel tracking for opens, link tracking for clicks
 
 #### Inertia.js Integration
 - Uses Inertia.js for SPA-like experience without API layer
@@ -47,7 +87,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 #### Component Structure
 - UI components in `resources/js/components/ui/` (shadcn/ui based)
-- App-specific components in `resources/js/components/`
+- Newsletter-specific components in `resources/js/components/campaigns/`, `resources/js/components/lists/`, `resources/js/components/subscribers/`
+- Editor components in `resources/js/components/editor/`
 - Layout components in `resources/js/layouts/`
 - TypeScript types in `resources/js/types/`
 
@@ -68,13 +109,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - ESLint config uses flat config format
 - Prettier with Tailwind plugin for class sorting
 
-### Database
+### Database Schema
 - SQLite for development (`database/database.sqlite`)
-- Migrations in `database/migrations/`
-- Uses Laravel's default user authentication tables
+- Newsletter-specific tables: `newsletter_lists`, `newsletter_subscribers`, `campaigns`, `images`
+- Tracking tables: `campaign_opens` (for email analytics)
+- Pivot tables for many-to-many relationships
 
 ### File Structure Notes
 - Laravel follows standard directory structure
 - React components use `.tsx` extension
 - Shared types centralized in `resources/js/types/index.d.ts`
-- Tailwind configured via Vite plugin (no separate config file)
+- Newsletter controllers in `app/Http/Controllers/`
+- Newsletter models in `app/Models/`
+- Background jobs in `app/Jobs/`
+- Email templates in `app/Mail/`

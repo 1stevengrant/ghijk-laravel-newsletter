@@ -2,16 +2,27 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
-    },
+        href: '/dashboard'
+    }
 ];
 
-export default function Dashboard({ campaignCount, listCount, subscriberCount }: {
+export default function Dashboard({
+                                      campaignCount,
+                                      draftCampaigns,
+                                      scheduledCampaigns,
+                                      sentCampaigns,
+                                      listCount,
+                                      subscriberCount
+                                  }: {
     campaignCount: number;
+    draftCampaigns: number;
+    scheduledCampaigns: number;
+    sentCampaigns: number;
     listCount: number;
     subscriberCount: number;
 }) {
@@ -26,9 +37,15 @@ export default function Dashboard({ campaignCount, listCount, subscriberCount }:
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{campaignCount}</div>
-                            <p className="text-xs text-muted-foreground">
-                                Email campaigns created
-                            </p>
+                            <div className="space-x-2">
+                                <Badge className="bg-blue-600 text-white">
+                                    {draftCampaigns} Drafts
+                                </Badge>
+                                <Badge className="bg-gray-200 text-black">
+                                    {scheduledCampaigns} Scheduled
+                                </Badge>
+                                <Badge className="bg-green-500 text-white">{sentCampaigns} Sent</Badge>
+                            </div>
                         </CardContent>
                     </Card>
 
