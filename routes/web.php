@@ -13,7 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('lists', NewsletterListController::class)
         ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->names('lists');
-    Route::resource('subscribers', NewsletterSubscriberController::class)
+    Route::resource('lists.subscribers', NewsletterSubscriberController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])
         ->names('subscribers');
 });

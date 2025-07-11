@@ -22,13 +22,12 @@ export const AddNewSubscriber = ({ listId }: AddNewSubscriberProps) => {
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         first_name: '',
         last_name: '',
-        email: '',
-        newsletter_list_id: listId
+        email: ''
     });
 
     const createSubscriber = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route('subscribers.store'), {
+        post(route('subscribers.store', listId), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onFinish: () => reset()

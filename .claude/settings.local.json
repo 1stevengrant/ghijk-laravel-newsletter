@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(npx:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(php artisan route:list:*)",
+      "Bash(php artisan:*)"
     ],
     "deny": []
   }

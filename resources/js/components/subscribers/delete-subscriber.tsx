@@ -21,7 +21,7 @@ export default function DeleteSubscriber({ subscriber }: { subscriber: App.Data.
     const deleteSubscriber: FormEventHandler = (e) => {
         e.preventDefault();
 
-        destroy(route('subscribers.destroy', subscriber.id), {
+        destroy(route('subscribers.destroy', [subscriber.newsletter_list_id, subscriber.id]), {
             onSuccess: () => setOpen(false)
         });
     };
