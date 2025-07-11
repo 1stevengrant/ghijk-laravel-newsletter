@@ -11,12 +11,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class SendCampaignJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
-    public $timeout = 300;
+    public int $timeout = 300;
 
     /**
      * Create a new job instance.
@@ -34,7 +35,7 @@ class SendCampaignJob implements ShouldQueue
     {
         // Add artificial delay in development for visibility
         if (app()->environment('local')) {
-            sleep(env('CAMPAIGN_SEND_DELAY', 3));
+            sleep(config('newsletters.campaign_send_delay'));
         }
 
         $subscribers = $this->campaign->newsletterList->subscribers()
