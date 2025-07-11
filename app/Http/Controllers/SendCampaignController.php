@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campaign;
-use Illuminate\Http\Request;
 use App\Jobs\SendCampaignJob;
+use App\Events\CampaignStatusChanged;
 
 class SendCampaignController extends Controller
 {
@@ -27,7 +27,11 @@ class SendCampaignController extends Controller
         }
 
         // Update campaign status to sending immediately
-        $campaign->update(['status' => 'sending']);
+        $previousStatus = $campaign->status;
+        $campaign->update(['status' => Campaign::STATUS_SENDING]);
+
+        // Broadcast the status change
+        CampaignStatusChanged::dispatch($campaign, $previousStatus, Campaign::STATUS_SENDING);
 
         // Dispatch the job to send the campaign
         SendCampaignJob::dispatch($campaign);

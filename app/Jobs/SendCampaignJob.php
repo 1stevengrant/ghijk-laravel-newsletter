@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Campaign;
 use App\Mail\CampaignEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Events\CampaignStatusChanged;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -31,6 +32,11 @@ class SendCampaignJob implements ShouldQueue
      */
     public function handle(): void
     {
+        // Add artificial delay in development for visibility
+        if (app()->environment('local')) {
+            sleep(env('CAMPAIGN_SEND_DELAY', 3));
+        }
+
         $subscribers = $this->campaign->newsletterList->subscribers()
             ->where('status', 'subscribed')
             ->get();
@@ -53,11 +59,15 @@ class SendCampaignJob implements ShouldQueue
         }
 
         // Update campaign with final stats
+        $previousStatus = $this->campaign->status;
         $this->campaign->update([
-            'status' => 'sent',
+            'status' => Campaign::STATUS_SENT,
             'sent_at' => now(),
             'sent_count' => $sentCount,
             'bounces' => $bounces,
         ]);
+
+        // Broadcast the status change
+        CampaignStatusChanged::dispatch($this->campaign, $previousStatus, Campaign::STATUS_SENT);
     }
 }

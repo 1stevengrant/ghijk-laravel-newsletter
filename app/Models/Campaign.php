@@ -10,6 +10,14 @@ class Campaign extends Model
 {
     use HasFactory;
 
+    public const STATUS_SENDING = 'sending';
+
+    public const STATUS_SENT = 'sent';
+
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_SCHEDULED = 'closed';
+
     protected $guarded = [];
 
     protected $casts = [
@@ -44,27 +52,27 @@ class Campaign extends Model
 
     public function isDraft(): bool
     {
-        return $this->status === 'draft';
+        return $this->status === self::STATUS_DRAFT;
     }
 
     public function isScheduled(): bool
     {
-        return $this->status === 'scheduled';
+        return $this->status === self::STATUS_SCHEDULED;
     }
 
     public function isSending(): bool
     {
-        return $this->status === 'sending';
+        return $this->status === self::STATUS_SENDING;
     }
 
     public function isSent(): bool
     {
-        return $this->status === 'sent';
+        return $this->status === self::STATUS_SENT;
     }
 
     public function canSend(): bool
     {
-        if (! in_array($this->status, ['draft', 'scheduled'])) {
+        if (! in_array($this->status, [self::STATUS_DRAFT, self::STATUS_SCHEDULED])) {
             return false;
         }
 

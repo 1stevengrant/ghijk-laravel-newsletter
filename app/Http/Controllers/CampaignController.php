@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Data\CampaignData;
 use Illuminate\Http\Request;
 use App\Models\NewsletterList;
+use App\Events\CampaignStatusChanged;
 
 class CampaignController extends Controller
 {
@@ -99,7 +100,13 @@ class CampaignController extends Controller
             'scheduled_at' => 'nullable|date|after:now',
         ]);
 
+        $previousStatus = $campaign->status;
         $campaign->update($request->only(['name', 'subject', 'content', 'newsletter_list_id', 'status', 'scheduled_at']));
+
+        // Broadcast status change if it changed
+        if ($previousStatus !== $campaign->status) {
+            CampaignStatusChanged::dispatch($campaign, $previousStatus, $campaign->status);
+        }
 
         return redirect()->route('campaigns.index')->with('success', 'Campaign updated successfully.');
     }

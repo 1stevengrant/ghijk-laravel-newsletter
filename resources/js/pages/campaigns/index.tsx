@@ -12,6 +12,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import SendNow from '@/components/campaigns/send-now';
+import { useEcho } from '@laravel/echo-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -34,6 +36,17 @@ const statusColors = {
 export default function CampaignsIndex({ campaigns }: {
     campaigns: App.Data.CampaignData[]
 }) {
+    const [campaignList, setCampaignList] = useState<App.Data.CampaignData[]>(campaigns);
+
+    useEcho('campaigns', 'CampaignStatusChanged', (e) => {
+        setCampaignList(prevCampaigns => 
+            prevCampaigns.map(campaign => 
+                campaign.id === e.campaign.id 
+                    ? { ...campaign, ...e.campaign }
+                    : campaign
+            )
+        );
+    });
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Campaigns" />
@@ -58,7 +71,7 @@ export default function CampaignsIndex({ campaigns }: {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {campaigns.map((campaign: App.Data.CampaignData) => (
+                        {campaignList.map((campaign: App.Data.CampaignData) => (
                             <TableRow key={campaign.id}>
                                 <TableCell className="font-medium">{campaign.name}</TableCell>
                                 <TableCell>
