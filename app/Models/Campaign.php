@@ -83,4 +83,22 @@ class Campaign extends Model
 
         return $subscriberCount > 0;
     }
+
+    public function getSentAtFriendlyAttribute(): string
+    {
+        if (! $this->sent_at) {
+            return 'N/A';
+        }
+
+        return $this->sent_at->diffForHumans();
+    }
+
+    public function getScheduledAtFriendlyAttribute(): string
+    {
+        if (! $this->scheduled_at) {
+            return 'N/A';
+        }
+
+        return $this->scheduled_at->diffForHumans();
+    }
 }

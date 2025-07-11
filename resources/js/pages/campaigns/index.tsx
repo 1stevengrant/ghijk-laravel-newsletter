@@ -39,9 +39,9 @@ export default function CampaignsIndex({ campaigns }: {
     const [campaignList, setCampaignList] = useState<App.Data.CampaignData[]>(campaigns);
 
     useEcho('campaigns', 'CampaignStatusChanged', (e) => {
-        setCampaignList(prevCampaigns => 
-            prevCampaigns.map(campaign => 
-                campaign.id === e.campaign.id 
+        setCampaignList(prevCampaigns =>
+            prevCampaigns.map(campaign =>
+                campaign.id === e.campaign.id
                     ? { ...campaign, ...e.campaign }
                     : campaign
             )
@@ -76,17 +76,22 @@ export default function CampaignsIndex({ campaigns }: {
                                 <TableCell className="font-medium">{campaign.name}</TableCell>
                                 <TableCell>
                                     <Badge className={statusColors[campaign.status as keyof typeof statusColors]}>
-                                        {campaign.status}
+                                        <span className="capitalize">{campaign.status}</span>
                                     </Badge>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className="capitalize">
                                     {campaign.newsletter_list?.name || 'N/A'}
+                                    {campaign.newsletter_list?.subscribers_count !== undefined && (
+                                        <span className="text-gray-500 ml-1">
+                                            ({campaign.newsletter_list.subscribers_count} subscribers)
+                                        </span>
+                                    )}
                                 </TableCell>
                                 <TableCell>
-                                    {campaign.scheduled_at ? campaign.scheduled_at : 'N/A'}
+                                    {campaign.scheduled_at_friendly}
                                 </TableCell>
                                 <TableCell>
-                                    {campaign.sent_at ? campaign.sent_at : 'N/A'}
+                                    {campaign.sent_at_friendly}
                                 </TableCell>
                                 <TableCell>
                                     <div className="text-sm">

@@ -15,8 +15,10 @@ class CampaignController extends Controller
      */
     public function index()
     {
-        $campaigns = Campaign::with(['newsletterList.subscribers' => function ($query) {
-            $query->where('status', 'subscribed');
+        $campaigns = Campaign::with(['newsletterList' => function ($query) {
+            $query->withCount(['subscribers' => function ($subQuery) {
+                $subQuery->where('status', 'subscribed');
+            }]);
         }])->orderBy('created_at', 'desc')->get();
 
         return inertia('campaigns/index', [

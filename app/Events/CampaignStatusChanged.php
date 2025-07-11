@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Campaign;
+use App\Data\CampaignData;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -31,7 +32,7 @@ class CampaignStatusChanged implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'campaign' => $this->campaign->load(['newsletterList'])->toArray(),
+            'campaign' => CampaignData::fromModel($this->campaign->load(['newsletterList'])),
             'previousStatus' => $this->previousStatus,
             'newStatus' => $this->newStatus,
         ];
