@@ -80,12 +80,13 @@ class CampaignController extends Controller
     {
         $request->validate([
             'content' => 'nullable|string',
+            'blocks' => 'nullable|array',
             'status' => 'required|in:draft,scheduled',
             'scheduled_at' => 'nullable|date|after:now',
         ]);
 
         $previousStatus = $campaign->status;
-        $campaign->update($request->only(['content', 'status', 'scheduled_at']));
+        $campaign->update($request->only(['content', 'blocks', 'status', 'scheduled_at']));
 
         // Broadcast status change if it changed
         if ($previousStatus !== $campaign->status) {
@@ -133,13 +134,14 @@ class CampaignController extends Controller
             'name' => 'required|string|max:255',
             'subject' => 'nullable|string|max:255',
             'content' => 'nullable|string',
+            'blocks' => 'nullable|array',
             'newsletter_list_id' => 'required|exists:newsletter_lists,id',
             'status' => 'required|in:draft,scheduled',
             'scheduled_at' => 'nullable|date|after:now',
         ]);
 
         $previousStatus = $campaign->status;
-        $campaign->update($request->only(['name', 'subject', 'content', 'newsletter_list_id', 'status', 'scheduled_at']));
+        $campaign->update($request->only(['name', 'subject', 'content', 'blocks', 'newsletter_list_id', 'status', 'scheduled_at']));
 
         // Broadcast status change if it changed
         if ($previousStatus !== $campaign->status) {

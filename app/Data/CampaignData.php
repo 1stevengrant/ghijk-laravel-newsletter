@@ -30,6 +30,7 @@ class CampaignData extends Data
         public float $unsubscribe_rate,
         public float $bounce_rate,
         public bool $can_send,
+        public ?array $blocks = null,
         public ?NewsletterListData $newsletter_list = null,
     ) {}
 
@@ -59,6 +60,7 @@ class CampaignData extends Data
             unsubscribe_rate: $campaign->unsubscribe_rate,
             bounce_rate: $campaign->bounce_rate,
             can_send: $canSend,
+            blocks: $campaign->blocks,
             newsletter_list: $campaign->relationLoaded('newsletterList') ?
                 NewsletterListData::from($campaign->newsletterList) : null,
         );

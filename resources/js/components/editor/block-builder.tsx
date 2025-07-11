@@ -8,6 +8,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import FileUpload from '@/components/ui/file-upload';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
   Plus,
   Trash2,
   GripVertical,
@@ -16,7 +35,6 @@ import {
   Quote,
   List,
   Minus,
-  ChevronUp,
   ChevronDown,
   ChevronRight
 } from 'lucide-react';
@@ -53,9 +71,122 @@ const blockTypes = [
   { type: 'separator' as const, label: 'Separator', icon: Minus },
 ];
 
+interface SortableBlockItemProps {
+  block: Block;
+  index: number;
+  isCollapsed: boolean;
+  campaignId?: number;
+  onUpdate: (id: string, updates: Partial<Block>) => void;
+  onDelete: (id: string) => void;
+  onToggleCollapse: (id: string) => void;
+  renderBlockContent: (block: Block) => React.ReactNode;
+  renderBlockPreview: (block: Block) => React.ReactNode;
+}
+
+function SortableBlockItem({
+  block,
+  isCollapsed,
+  onDelete,
+  onToggleCollapse,
+  renderBlockContent,
+  renderBlockPreview,
+}: SortableBlockItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: block.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className={cn(isDragging && 'opacity-50')}>
+      <Collapsible.Root
+        open={!isCollapsed}
+        onOpenChange={() => onToggleCollapse(block.id)}
+      >
+        <Card className="overflow-hidden">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Collapsible.Trigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                  >
+                    {isCollapsed ? (
+                      <ChevronRight className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </Button>
+                </Collapsible.Trigger>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 cursor-grab active:cursor-grabbing"
+                  {...attributes}
+                  {...listeners}
+                >
+                  <GripVertical className="h-4 w-4 text-gray-400" />
+                </Button>
+                <span className="font-medium capitalize">{block.type} Block</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(block.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <Collapsible.Content className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+            <CardContent>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Block Editor */}
+                <div className="space-y-4">
+                  {renderBlockContent(block)}
+                </div>
+
+                {/* Block Preview */}
+                <div className="space-y-4">
+                  <h4 className="font-medium">Preview</h4>
+                  <div className="border rounded-lg p-4 bg-gray-50 min-h-[100px] prose">
+                    {renderBlockPreview(block)}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Collapsible.Content>
+        </Card>
+      </Collapsible.Root>
+    </div>
+  );
+}
+
 export default function BlockBuilder({ blocks, onChange, className, campaignId }: BlockBuilderProps) {
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [collapsedBlocks, setCollapsedBlocks] = useState<Set<string>>(new Set());
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -86,18 +217,6 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
     }
   }, [blocks, onChange, selectedBlockId]);
 
-  const moveBlock = useCallback((id: string, direction: 'up' | 'down') => {
-    const index = blocks.findIndex(block => block.id === id);
-    if (index === -1) return;
-
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= blocks.length) return;
-
-    const newBlocks = [...blocks];
-    [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
-    onChange(newBlocks);
-  }, [blocks, onChange]);
-
   const toggleBlockCollapse = useCallback((id: string) => {
     setCollapsedBlocks(prev => {
       const newSet = new Set(prev);
@@ -109,6 +228,17 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
       return newSet;
     });
   }, []);
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = blocks.findIndex(block => block.id === active.id);
+      const newIndex = blocks.findIndex(block => block.id === over?.id);
+
+      onChange(arrayMove(blocks, oldIndex, newIndex));
+    }
+  }, [blocks, onChange]);
 
   const renderBlockContent = (block: Block) => {
     switch (block.type) {
@@ -127,7 +257,7 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
         return (
           <div className="space-y-4">
             <div>
-              <Label>Upload Image</Label>
+              <Label className="sr-only">Upload Image</Label>
               <FileUpload
                 accept="image/*"
                 maxSize={10 * 1024 * 1024} // 10MB
@@ -143,7 +273,7 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
               />
             </div>
             <div>
-              <Label htmlFor={`image-alt-${block.id}`}>Alt Text</Label>
+              <Label className="sr-only" htmlFor={`image-alt-${block.id}`}>Alt Text</Label>
               <Input
                 id={`image-alt-${block.id}`}
                 type="text"
@@ -322,80 +452,30 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
       </Card>
 
       {/* Content Blocks */}
-      {blocks.map((block, index) => (
-        <Collapsible.Root
-          key={block.id}
-          open={!collapsedBlocks.has(block.id)}
-          onOpenChange={() => toggleBlockCollapse(block.id)}
-        >
-          <Card className="overflow-hidden">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Collapsible.Trigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0"
-                    >
-                      {collapsedBlocks.has(block.id) ? (
-                        <ChevronRight className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </Collapsible.Trigger>
-                  <GripVertical className="h-4 w-4 text-gray-400" />
-                  <span className="font-medium capitalize">{block.type} Block</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => moveBlock(block.id, 'up')}
-                    disabled={index === 0}
-                  >
-                    <ChevronUp className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => moveBlock(block.id, 'down')}
-                    disabled={index === blocks.length - 1}
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteBlock(block.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <Collapsible.Content className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-              <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Block Editor */}
-                  <div className="space-y-4">
-                    {renderBlockContent(block)}
-                  </div>
-
-                  {/* Block Preview */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Preview</h4>
-                    <div className="border rounded-lg p-4 bg-gray-50 min-h-[100px] prose">
-                      {renderBlockPreview(block)}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Collapsible.Content>
-          </Card>
-        </Collapsible.Root>
-      ))}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={blocks.map(block => block.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-6">
+            {blocks.map((block, index) => (
+              <SortableBlockItem
+                key={block.id}
+                block={block}
+                index={index}
+                isCollapsed={collapsedBlocks.has(block.id)}
+                campaignId={campaignId}
+                onUpdate={updateBlock}
+                onDelete={deleteBlock}
+                onToggleCollapse={toggleBlockCollapse}
+                renderBlockContent={renderBlockContent}
+                renderBlockPreview={renderBlockPreview}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {blocks.length === 0 && (
         <div className="text-center py-12 text-gray-500">

@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BlockBuilder, { type Block } from '@/components/editor/block-builder';
 import { FormEvent, useState } from 'react';
+import { convertBlocksToHtml, initializeBlocksFromCampaign, shouldUseBlocksMode } from '@/utils/block-utils';
 
 export default function CampaignContent({ campaign }: {
     campaign: App.Data.CampaignData;
@@ -33,55 +34,43 @@ export default function CampaignContent({ campaign }: {
         }
     ];
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         content: campaign.content || '',
         status: campaign.status,
         scheduled_at: campaign.scheduled_at ? campaign.scheduled_at.slice(0, 16) : '',
+        blocks: campaign.blocks || null,
     });
 
-    const [blocks, setBlocks] = useState<Block[]>([]);
-    const [contentType, setContentType] = useState<'simple' | 'blocks'>('simple');
+    // Initialize blocks and content type based on campaign data
+    const [blocks, setBlocks] = useState<Block[]>(() => initializeBlocksFromCampaign(campaign));
+    const [contentType, setContentType] = useState<'simple' | 'blocks'>(() => shouldUseBlocksMode(campaign) ? 'blocks' : 'simple');
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         
+        // Prepare the data to submit
+        let submitData = {
+            content: data.content,
+            status: data.status,
+            scheduled_at: data.scheduled_at,
+            blocks: data.blocks,
+        };
+
         // Convert blocks to HTML if using block builder
         if (contentType === 'blocks') {
             const htmlContent = convertBlocksToHtml(blocks);
-            setData('content', htmlContent);
+            submitData = {
+                ...submitData,
+                content: htmlContent,
+                blocks: blocks,
+            };
         }
         
-        put(route('campaigns.content.update', campaign.id));
+        
+        router.put(route('campaigns.content.update', campaign.id), submitData);
     };
 
-    const convertBlocksToHtml = (blocks: Block[]): string => {
-        return blocks.map(block => {
-            switch (block.type) {
-                case 'text':
-                    return block.content;
-                case 'image': {
-                    const imageUrl = block.settings?.imageUrl || '';
-                    const fullUrl = imageUrl.startsWith('http') ? imageUrl : `${window.location.origin}${imageUrl}`;
-                    return `<div style="text-align: center; margin: 20px 0;"><img src="${fullUrl}" alt="${block.settings?.imageAlt || ''}" style="max-width: 100%; height: auto; border-radius: 8px;" /></div>`;
-                }
-                case 'quote': {
-                    const author = block.settings?.quoteAuthor ? `<cite>— ${block.settings.quoteAuthor}</cite>` : '';
-                    return `<blockquote style="border-left: 4px solid #e5e7eb; padding-left: 1rem; font-style: italic; color: #6b7280;"><p>${block.content}</p>${author}</blockquote>`;
-                }
-                case 'list': {
-                    const items = block.content.split('\n').filter(item => item.trim());
-                    const listItems = items.map(item => `<li>${item}</li>`).join('');
-                    return block.settings?.listType === 'numbered' 
-                        ? `<ol>${listItems}</ol>`
-                        : `<ul>${listItems}</ul>`;
-                }
-                case 'separator':
-                    return '<hr style="border: none; border-top: 1px solid #e5e7eb; margin: 1rem 0;" />';
-                default:
-                    return '';
-            }
-        }).join('\n');
-    };
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

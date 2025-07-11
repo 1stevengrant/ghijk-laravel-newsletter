@@ -20,6 +20,7 @@ click_rate: number;
 unsubscribe_rate: number;
 bounce_rate: number;
 can_send: boolean;
+blocks: Array<any> | null;
 newsletter_list: App.Data.NewsletterListData | null;
 };
 export type NewsletterListData = {
