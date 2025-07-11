@@ -68,6 +68,11 @@ class CampaignController extends Controller
      */
     public function content(Campaign $campaign)
     {
+        if (! $campaign->canEdit()) {
+            return redirect()->route('campaigns.show', $campaign)
+                ->with('error', 'Cannot edit a campaign that has already been sent.');
+        }
+
         return inertia('campaigns/content', [
             'campaign' => CampaignData::fromModel($campaign),
         ]);
@@ -78,6 +83,11 @@ class CampaignController extends Controller
      */
     public function updateContent(Request $request, Campaign $campaign)
     {
+        if (! $campaign->canEdit()) {
+            return redirect()->route('campaigns.show', $campaign)
+                ->with('error', 'Cannot edit a campaign that has already been sent.');
+        }
+
         $request->validate([
             'content' => 'nullable|string',
             'blocks' => 'nullable|array',
@@ -115,6 +125,11 @@ class CampaignController extends Controller
      */
     public function edit(Campaign $campaign)
     {
+        if (! $campaign->canEdit()) {
+            return redirect()->route('campaigns.show', $campaign)
+                ->with('error', 'Cannot edit a campaign that has already been sent.');
+        }
+
         $lists = NewsletterList::withCount(['subscribers' => function ($query) {
             $query->where('status', 'subscribed');
         }])->get();
@@ -130,6 +145,11 @@ class CampaignController extends Controller
      */
     public function update(Request $request, Campaign $campaign)
     {
+        if (! $campaign->canEdit()) {
+            return redirect()->route('campaigns.show', $campaign)
+                ->with('error', 'Cannot edit a campaign that has already been sent.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'subject' => 'nullable|string|max:255',
