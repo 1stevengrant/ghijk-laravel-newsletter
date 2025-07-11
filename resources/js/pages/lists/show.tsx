@@ -14,7 +14,7 @@ import { AddNewSubscriber } from '@/components/subscribers/add-new-subscriber';
 
 
 
-export default function NewsletterLists({ list }: {
+export default function Show({ list }: {
     list: App.Data.NewsletterListData
 }) {
     const breadcrumbs: BreadcrumbItem[] = [

@@ -13,7 +13,7 @@ class NewsletterListController extends Controller
      */
     public function index()
     {
-        return inertia('newsletter-lists', [
+        return inertia('lists/index', [
             'lists' => NewsletterListData::collect(NewsletterList::query()->withCount('subscribers')->get()),
         ]);
     }
@@ -44,7 +44,7 @@ class NewsletterListController extends Controller
             $query->orderBy('subscribed_at', 'desc');
         }]);
 
-        return inertia('newsletter-list-show', [
+        return inertia('lists/show', [
             'list' => NewsletterListData::from($list),
         ]);
     }

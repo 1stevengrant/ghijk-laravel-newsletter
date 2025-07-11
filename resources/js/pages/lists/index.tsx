@@ -26,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     }
 ];
 
-export default function NewsletterLists({ lists }: {
+export default function Index({ lists }: {
     lists: App.Data.NewsletterListData[]
 }) {
     return (
