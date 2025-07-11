@@ -20,6 +20,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Remote Database Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for syncing database with remote server using rsync.
+    |
+    */
+
+    'remote' => [
+        'user' => env('DATABASE_REMOTE_USER'),
+        'host' => env('DATABASE_REMOTE_HOST'),
+        'path' => env('DATABASE_REMOTE_PATH'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Database Connections
     |--------------------------------------------------------------------------
     |
