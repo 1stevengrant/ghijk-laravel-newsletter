@@ -10,11 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BlockBuilder, { type Block } from '@/components/editor/block-builder';
 import { FormEvent, useState } from 'react';
-import InputError from '@/components/input-error';
 
-export default function EditCampaign({ campaign, lists }: {
+export default function CampaignContent({ campaign }: {
     campaign: App.Data.CampaignData;
-    lists: { id: number; name: string; subscribers_count: number }[];
 }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -30,18 +28,15 @@ export default function EditCampaign({ campaign, lists }: {
             href: `/campaigns/${campaign.id}`
         },
         {
-            title: 'Edit',
-            href: `/campaigns/${campaign.id}/edit`
+            title: 'Content',
+            href: `/campaigns/${campaign.id}/content`
         }
     ];
 
     const { data, setData, put, processing, errors } = useForm({
-        name: campaign.name,
-        subject: campaign.subject || '',
         content: campaign.content || '',
-        newsletter_list_id: campaign.newsletter_list_id.toString(),
         status: campaign.status,
-        scheduled_at: campaign.scheduled_at ? campaign.scheduled_at.slice(0, 16) : ''
+        scheduled_at: campaign.scheduled_at ? campaign.scheduled_at.slice(0, 16) : '',
     });
 
     const [blocks, setBlocks] = useState<Block[]>([]);
@@ -56,7 +51,7 @@ export default function EditCampaign({ campaign, lists }: {
             setData('content', htmlContent);
         }
         
-        put(route('campaigns.update', campaign.id));
+        put(route('campaigns.content.update', campaign.id));
     };
 
     const convertBlocksToHtml = (blocks: Block[]): string => {
@@ -90,41 +85,17 @@ export default function EditCampaign({ campaign, lists }: {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Edit ${campaign.name}`} />
+            <Head title={`${campaign.name} - Content`} />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Edit Campaign</CardTitle>
+                        <CardTitle>Create Campaign Content - Step 2</CardTitle>
                         <CardDescription>
-                            Update the campaign details.
+                            Add content to your campaign: <strong>{campaign.name}</strong>
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <Label htmlFor="name">Campaign Name</Label>
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    placeholder="Enter campaign name"
-                                />
-                                {errors.name && <InputError message={errors.name} />}
-                            </div>
-
-                            <div>
-                                <Label htmlFor="subject">Email Subject</Label>
-                                <Input
-                                    id="subject"
-                                    type="text"
-                                    value={data.subject}
-                                    onChange={(e) => setData('subject', e.target.value)}
-                                    placeholder="Enter email subject"
-                                />
-                                {errors.subject && <InputError message={errors.subject} />}
-                            </div>
-
                             <div>
                                 <Label htmlFor="content">Email Content</Label>
                                 <Tabs value={contentType} onValueChange={(value) => setContentType(value as 'simple' | 'blocks')}>
@@ -139,7 +110,7 @@ export default function EditCampaign({ campaign, lists }: {
                                             value={data.content}
                                             onChange={(e) => setData('content', e.target.value)}
                                             placeholder="Enter your email content here..."
-                                            rows={8}
+                                            rows={12}
                                         />
                                     </TabsContent>
                                     
@@ -147,30 +118,11 @@ export default function EditCampaign({ campaign, lists }: {
                                         <BlockBuilder
                                             blocks={blocks}
                                             onChange={setBlocks}
+                                            campaignId={campaign.id}
                                         />
                                     </TabsContent>
                                 </Tabs>
-                                {errors.content && <InputError message={errors.content} />}
-                            </div>
-
-                            <div>
-                                <Label htmlFor="newsletter_list_id">Newsletter List</Label>
-                                <Select
-                                    value={data.newsletter_list_id}
-                                    onValueChange={(value) => setData('newsletter_list_id', value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a newsletter list" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {lists.map((list) => (
-                                            <SelectItem key={list.id} value={list.id.toString()}>
-                                                {list.name} ({list.subscribers_count} subscribers)
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.newsletter_list_id && <InputError message={errors.newsletter_list_id} />}
+                                {errors.content && <p className="text-red-500 text-sm">{errors.content}</p>}
                             </div>
 
                             <div>
@@ -187,7 +139,7 @@ export default function EditCampaign({ campaign, lists }: {
                                         <SelectItem value="scheduled">Scheduled</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {errors.status && <InputError message={errors.status} />}
+                                {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
                             </div>
 
                             {data.status === 'scheduled' && (
@@ -199,18 +151,22 @@ export default function EditCampaign({ campaign, lists }: {
                                         value={data.scheduled_at}
                                         onChange={(e) => setData('scheduled_at', e.target.value)}
                                     />
-                                    {errors.scheduled_at &&
-                                        <InputError message={errors.scheduled_at} />}
+                                    {errors.scheduled_at && <p className="text-red-500 text-sm">{errors.scheduled_at}</p>}
                                 </div>
                             )}
 
                             <div className="flex gap-2">
                                 <Button type="submit" disabled={processing}>
-                                    Update Campaign
+                                    Save Campaign
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link href={route('campaigns.show', campaign.id)}>
-                                        Cancel
+                                        Preview
+                                    </Link>
+                                </Button>
+                                <Button variant="ghost" asChild>
+                                    <Link href={route('campaigns.index')}>
+                                        Back to Campaigns
                                     </Link>
                                 </Button>
                             </div>

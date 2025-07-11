@@ -41,22 +41,58 @@ class CampaignController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Step 1).
      */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'subject' => 'nullable|string|max:255',
-            'content' => 'nullable|string',
             'newsletter_list_id' => 'required|exists:newsletter_lists,id',
+        ]);
+
+        $campaign = Campaign::create([
+            'name' => $request->name,
+            'subject' => $request->subject,
+            'newsletter_list_id' => $request->newsletter_list_id,
+            'status' => 'draft',
+            'content' => '', // Empty content initially
+        ]);
+
+        // Redirect to step 2 (content editing)
+        return redirect()->route('campaigns.content', $campaign)->with('success', 'Campaign created! Now add your content.');
+    }
+
+    /**
+     * Show the content editing form (Step 2).
+     */
+    public function content(Campaign $campaign)
+    {
+        return inertia('campaigns/content', [
+            'campaign' => CampaignData::fromModel($campaign),
+        ]);
+    }
+
+    /**
+     * Update campaign content and status (Step 2).
+     */
+    public function updateContent(Request $request, Campaign $campaign)
+    {
+        $request->validate([
+            'content' => 'nullable|string',
             'status' => 'required|in:draft,scheduled',
             'scheduled_at' => 'nullable|date|after:now',
         ]);
 
-        Campaign::create($request->only(['name', 'subject', 'content', 'newsletter_list_id', 'status', 'scheduled_at']));
+        $previousStatus = $campaign->status;
+        $campaign->update($request->only(['content', 'status', 'scheduled_at']));
 
-        return redirect()->route('campaigns.index')->with('success', 'Campaign created successfully.');
+        // Broadcast status change if it changed
+        if ($previousStatus !== $campaign->status) {
+            CampaignStatusChanged::dispatch($campaign, $previousStatus, $campaign->status);
+        }
+
+        return redirect()->route('campaigns.show', $campaign)->with('success', 'Campaign content updated successfully.');
     }
 
     /**
@@ -110,7 +146,7 @@ class CampaignController extends Controller
             CampaignStatusChanged::dispatch($campaign, $previousStatus, $campaign->status);
         }
 
-        return redirect()->route('campaigns.index')->with('success', 'Campaign updated successfully.');
+        return redirect()->route('campaigns.content', $campaign)->with('success', 'Campaign updated successfully.');
     }
 
     /**

@@ -66,7 +66,9 @@
         <div class="content">
             <h2>{{ $campaign->subject ?? $campaign->name }}</h2>
             
-            @if($campaign->content)
+            @if(isset($content) && $content)
+                {!! $content !!}
+            @elseif($campaign->content)
                 {!! nl2br(e($campaign->content)) !!}
             @else
                 <p>Hello {{ $subscriber->name ?? 'there' }},</p>

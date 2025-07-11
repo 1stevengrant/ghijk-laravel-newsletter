@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Campaign;
+use App\Helpers\EmailHelper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use App\Models\NewsletterSubscriber;
@@ -51,6 +52,7 @@ class CampaignEmail extends Mailable
                 'subscriber' => $this->subscriber,
                 'unsubscribeUrl' => $this->generateUnsubscribeUrl(),
                 'trackingPixelUrl' => $this->generateTrackingPixelUrl(),
+                'content' => EmailHelper::convertRelativeUrlsToAbsolute($this->campaign->content ?? ''),
             ]
         );
     }

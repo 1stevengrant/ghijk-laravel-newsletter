@@ -38,7 +38,7 @@ export default function CampaignsIndex({ campaigns }: {
 }) {
     const [campaignList, setCampaignList] = useState<App.Data.CampaignData[]>(campaigns);
 
-    useEcho('campaigns', 'CampaignStatusChanged', (e) => {
+    useEcho('campaigns', 'CampaignStatusChanged', (e: { campaign: App.Data.CampaignData }) => {
         setCampaignList(prevCampaigns =>
             prevCampaigns.map(campaign =>
                 campaign.id === e.campaign.id

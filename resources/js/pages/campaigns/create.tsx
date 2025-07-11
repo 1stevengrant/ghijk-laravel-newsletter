@@ -4,7 +4,6 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormEvent } from 'react';
@@ -30,10 +29,7 @@ export default function CreateCampaign({ lists }: {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         subject: '',
-        content: '',
         newsletter_list_id: '',
-        status: 'draft',
-        scheduled_at: '',
     });
 
     const handleSubmit = (e: FormEvent) => {
@@ -47,9 +43,9 @@ export default function CreateCampaign({ lists }: {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Create New Campaign</CardTitle>
+                        <CardTitle>Create New Campaign - Step 1</CardTitle>
                         <CardDescription>
-                            Create a new email campaign for your newsletter list.
+                            Set up the basic information for your email campaign.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -79,18 +75,6 @@ export default function CreateCampaign({ lists }: {
                             </div>
 
                             <div>
-                                <Label htmlFor="content">Email Content</Label>
-                                <Textarea
-                                    id="content"
-                                    value={data.content}
-                                    onChange={(e) => setData('content', e.target.value)}
-                                    placeholder="Enter your email content here..."
-                                    rows={8}
-                                />
-                                {errors.content && <p className="text-red-500 text-sm">{errors.content}</p>}
-                            </div>
-
-                            <div>
                                 <Label htmlFor="newsletter_list_id">Newsletter List</Label>
                                 <Select
                                     value={data.newsletter_list_id}
@@ -110,39 +94,9 @@ export default function CreateCampaign({ lists }: {
                                 {errors.newsletter_list_id && <p className="text-red-500 text-sm">{errors.newsletter_list_id}</p>}
                             </div>
 
-                            <div>
-                                <Label htmlFor="status">Status</Label>
-                                <Select
-                                    value={data.status}
-                                    onValueChange={(value) => setData('status', value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="draft">Draft</SelectItem>
-                                        <SelectItem value="scheduled">Scheduled</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
-                            </div>
-
-                            {data.status === 'scheduled' && (
-                                <div>
-                                    <Label htmlFor="scheduled_at">Scheduled Date & Time</Label>
-                                    <Input
-                                        id="scheduled_at"
-                                        type="datetime-local"
-                                        value={data.scheduled_at}
-                                        onChange={(e) => setData('scheduled_at', e.target.value)}
-                                    />
-                                    {errors.scheduled_at && <p className="text-red-500 text-sm">{errors.scheduled_at}</p>}
-                                </div>
-                            )}
-
                             <div className="flex gap-2">
                                 <Button type="submit" disabled={processing}>
-                                    Create Campaign
+                                    Continue to Content
                                 </Button>
                                 <Button variant="outline" asChild>
                                     <Link href={route('campaigns.index')}>

@@ -9,7 +9,12 @@
       "Bash(composer test)",
       "Bash(npm run types:*)",
       "Bash(npm run build:*)",
-      "Bash(./vendor/bin/pint)"
+      "Bash(./vendor/bin/pint)",
+      "Bash(npm install:*)",
+      "Bash(npm run lint)",
+      "Bash(composer:*)",
+      "WebFetch(domain:image.intervention.io)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   }

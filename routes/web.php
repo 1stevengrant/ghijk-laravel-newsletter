@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\SendCampaignController;
 use App\Http\Controllers\NewsletterListController;
 use App\Http\Controllers\Email\TrackEmailOpenController;
@@ -22,7 +23,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->only(['store', 'destroy'])
         ->names('subscribers');
     Route::resource('campaigns', CampaignController::class);
+    Route::get('campaigns/{campaign}/content', [CampaignController::class, 'content'])->name('campaigns.content');
+    Route::put('campaigns/{campaign}/content', [CampaignController::class, 'updateContent'])->name('campaigns.content.update');
     Route::post('campaigns/{campaign}/send', SendCampaignController::class)->name('campaigns.send');
+    Route::post('images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
+    Route::post('campaigns/{campaign}/images/upload', [ImageUploadController::class, 'store'])->name('campaigns.images.upload');
+    Route::delete('images', [ImageUploadController::class, 'destroy'])->name('images.destroy');
 });
 
 // Email tracking routes (no middleware required)
