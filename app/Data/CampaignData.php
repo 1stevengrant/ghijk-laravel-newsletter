@@ -67,7 +67,7 @@ class CampaignData extends Data
             can_send: $canSend,
             can_edit: $canEdit,
             can_delete: $canDelete,
-            blocks: $campaign->blocks,
+            blocks: $campaign->blocks ? BlockData::collect($campaign->blocks) : null,
             newsletter_list: $campaign->relationLoaded('newsletterList') ?
                 NewsletterListData::from($campaign->newsletterList) : null,
         );
