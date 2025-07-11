@@ -1,4 +1,18 @@
 declare namespace App.Data {
+export type BlockData = {
+id: string;
+type: string;
+content: string;
+settings: App.Data.BlockSettingsData | null;
+};
+export type BlockSettingsData = {
+imageId: number | null;
+imageUrl: string | null;
+imageAlt: string | null;
+imagePath: string | null;
+listType: string | null;
+quoteAuthor: string | null;
+};
 export type CampaignData = {
 id: number;
 name: string;
@@ -22,7 +36,7 @@ bounce_rate: number;
 can_send: boolean;
 can_edit: boolean;
 can_delete: boolean;
-blocks: Array<any> | null;
+blocks: Array<App.Data.BlockData> | null;
 newsletter_list: App.Data.NewsletterListData | null;
 };
 export type NewsletterListData = {

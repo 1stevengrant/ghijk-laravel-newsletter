@@ -32,6 +32,7 @@ class CampaignData extends Data
         public bool $can_send,
         public bool $can_edit,
         public bool $can_delete,
+        /** @var BlockData[]|null */
         public ?array $blocks = null,
         public ?NewsletterListData $newsletter_list = null,
     ) {}
