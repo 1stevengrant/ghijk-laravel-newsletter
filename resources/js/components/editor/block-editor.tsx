@@ -79,17 +79,27 @@ export default function BlockEditor({
   });
 
 
-  const addLink = useCallback(() => {
+  const addLink = useCallback((e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     const previousUrl = editor?.getAttributes('link').href;
     const url = window.prompt('Enter URL:', previousUrl);
 
-    if (url === null) return;
+    // If user clicked cancel, url will be null - just return without doing anything
+    if (url === null) {
+      return;
+    }
 
+    // If user entered empty string, remove the link
     if (url === '') {
       editor?.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
+    // Set the link with the entered URL
     editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }, [editor]);
 
@@ -236,6 +246,7 @@ export default function BlockEditor({
 
         {/* Link */}
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           onClick={addLink}
@@ -248,6 +259,7 @@ export default function BlockEditor({
 
         {/* Undo/Redo */}
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
@@ -256,6 +268,7 @@ export default function BlockEditor({
           <Undo className="h-4 w-4" />
         </Button>
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}

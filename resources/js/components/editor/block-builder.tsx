@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import FileUpload from '@/components/ui/file-upload';
+import * as Collapsible from '@radix-ui/react-collapsible';
 import {
   Plus,
   Trash2,
@@ -16,7 +17,8 @@ import {
   List,
   Minus,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import BlockEditor from './block-editor';
@@ -53,6 +55,7 @@ const blockTypes = [
 
 export default function BlockBuilder({ blocks, onChange, className, campaignId }: BlockBuilderProps) {
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const [collapsedBlocks, setCollapsedBlocks] = useState<Set<string>>(new Set());
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -94,6 +97,18 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
     [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
     onChange(newBlocks);
   }, [blocks, onChange]);
+
+  const toggleBlockCollapse = useCallback((id: string) => {
+    setCollapsedBlocks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }, []);
 
   const renderBlockContent = (block: Block) => {
     switch (block.type) {
@@ -308,57 +323,78 @@ export default function BlockBuilder({ blocks, onChange, className, campaignId }
 
       {/* Content Blocks */}
       {blocks.map((block, index) => (
-        <Card key={block.id} className="overflow-hidden">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <GripVertical className="h-4 w-4 text-gray-400" />
-                <span className="font-medium capitalize">{block.type} Block</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => moveBlock(block.id, 'up')}
-                  disabled={index === 0}
-                >
-                  <ChevronUp className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => moveBlock(block.id, 'down')}
-                  disabled={index === blocks.length - 1}
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => deleteBlock(block.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Block Editor */}
-              <div className="space-y-4">
-                {renderBlockContent(block)}
-              </div>
-
-              {/* Block Preview */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Preview</h4>
-                <div className="border rounded-lg p-4 bg-gray-50 min-h-[100px] prose">
-                  {renderBlockPreview(block)}
+        <Collapsible.Root
+          key={block.id}
+          open={!collapsedBlocks.has(block.id)}
+          onOpenChange={() => toggleBlockCollapse(block.id)}
+        >
+          <Card className="overflow-hidden">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Collapsible.Trigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                    >
+                      {collapsedBlocks.has(block.id) ? (
+                        <ChevronRight className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </Collapsible.Trigger>
+                  <GripVertical className="h-4 w-4 text-gray-400" />
+                  <span className="font-medium capitalize">{block.type} Block</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => moveBlock(block.id, 'up')}
+                    disabled={index === 0}
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => moveBlock(block.id, 'down')}
+                    disabled={index === blocks.length - 1}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteBlock(block.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <Collapsible.Content className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Block Editor */}
+                  <div className="space-y-4">
+                    {renderBlockContent(block)}
+                  </div>
+
+                  {/* Block Preview */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Preview</h4>
+                    <div className="border rounded-lg p-4 bg-gray-50 min-h-[100px] prose">
+                      {renderBlockPreview(block)}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Collapsible.Content>
+          </Card>
+        </Collapsible.Root>
       ))}
 
       {blocks.length === 0 && (
