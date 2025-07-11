@@ -59,13 +59,9 @@
 </head>
 <body>
     <div class="email-container">
-        <div class="header">
-            <h1>{{ $campaign->newsletterList->name }}</h1>
-        </div>
-        
         <div class="content">
             <h2>{{ $campaign->subject ?? $campaign->name }}</h2>
-            
+
             @if(isset($content) && $content)
                 {!! $content !!}
             @elseif($campaign->content)
@@ -76,7 +72,7 @@
                 <p>This is a sample campaign email. You can customize this content in your campaign settings.</p>
             @endif
         </div>
-        
+
         <div class="footer">
             <p>
                 You received this email because you subscribed to {{ $campaign->newsletterList->name }}.
@@ -87,12 +83,12 @@
                 </a>
             </p>
             <p>
-                Sent by {{ $campaign->newsletterList->from_name }} 
+                Sent by {{ $campaign->newsletterList->from_name }}
                 &lt;{{ $campaign->newsletterList->from_email }}&gt;
             </p>
         </div>
     </div>
-    
+
     <!-- Tracking pixel for open tracking -->
     <img src="{{ $trackingPixelUrl }}" alt="" class="tracking-pixel">
 </body>
