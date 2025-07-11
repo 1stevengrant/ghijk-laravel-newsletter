@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import DeleteList from '@/components/lists/delete-list';
 import { AddNewList } from '@/components/lists/add-new-list';
 import { EditList } from '@/components/lists/edit-list';
+import { EyeIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -62,7 +63,7 @@ export default function NewsletterLists({ lists }: {
                                             variant="outline"
                                             asChild>
                                             <Link href={route('lists.show', list.id)}>
-                                                Show
+                                                <EyeIcon />
                                             </Link>
                                         </Button>
                                     </div>

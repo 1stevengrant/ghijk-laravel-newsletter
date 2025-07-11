@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { SendHorizonalIcon } from 'lucide-react';
 
 interface SendNowProps {
     campaign: App.Data.CampaignData;
@@ -30,11 +31,11 @@ export default function SendNow({ campaign }: SendNowProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button 
-                    size="sm" 
+                <Button
+                    size="sm"
                     className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                    Send Now
+                    <SendHorizonalIcon />
                 </Button>
             </DialogTrigger>
             <DialogContent>
@@ -48,8 +49,8 @@ export default function SendNow({ campaign }: SendNowProps) {
                     <Button variant="outline" onClick={() => setOpen(false)}>
                         Cancel
                     </Button>
-                    <Button 
-                        onClick={handleSend} 
+                    <Button
+                        onClick={handleSend}
                         disabled={processing}
                         className="bg-green-600 hover:bg-green-700 text-white"
                     >

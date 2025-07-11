@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Trash2Icon, TrashIcon } from 'lucide-react';
 
 interface DeleteListProps {
     list: {
@@ -46,7 +47,9 @@ export default function DeleteList({ list }: DeleteListProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="destructive" size="sm">Delete</Button>
+                <Button variant="destructive" size="sm">
+                    <Trash2Icon />
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Are you sure you want to delete "{list.name}"?</DialogTitle>

@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
 import React, { useState } from 'react';
+import { PencilIcon } from 'lucide-react';
 
 
 export const EditList = ({ list }: { list: App.Data.NewsletterListData }) => {
@@ -42,7 +43,7 @@ export const EditList = ({ list }: { list: App.Data.NewsletterListData }) => {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
-                    Edit
+                    <PencilIcon />
                 </Button>
             </DialogTrigger>
             <DialogContent>

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
+use App\Models\NewsletterList;
+use App\Models\NewsletterSubscriber;
 
 class DashboardController extends Controller
 {
@@ -12,6 +15,14 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return Inertia::render('dashboard');
+        $campaignCount = Campaign::count();
+        $listCount = NewsletterList::count();
+        $subscriberCount = NewsletterSubscriber::where('status', 'subscribed')->count();
+
+        return Inertia::render('dashboard', [
+            'campaignCount' => $campaignCount,
+            'listCount' => $listCount,
+            'subscriberCount' => $subscriberCount,
+        ]);
     }
 }

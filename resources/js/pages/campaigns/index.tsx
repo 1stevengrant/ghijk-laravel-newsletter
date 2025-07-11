@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import SendNow from '@/components/campaigns/send-now';
 import { useEcho } from '@laravel/echo-react';
 import { useState } from 'react';
+import { EyeIcon, PencilIcon, PlusIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -54,6 +55,7 @@ export default function CampaignsIndex({ campaigns }: {
                 <div>
                     <Button asChild>
                         <Link href={route('campaigns.create')}>
+                            <PlusIcon />
                             Create Campaign
                         </Link>
                     </Button>
@@ -110,7 +112,7 @@ export default function CampaignsIndex({ campaigns }: {
                                             size="sm"
                                             asChild>
                                             <Link href={route('campaigns.show', campaign.id)}>
-                                                View
+                                                <EyeIcon />
                                             </Link>
                                         </Button>
                                         {campaign.can_edit && (
@@ -119,7 +121,7 @@ export default function CampaignsIndex({ campaigns }: {
                                                 size="sm"
                                                 asChild>
                                                 <Link href={route('campaigns.edit', campaign.id)}>
-                                                    Edit
+                                                    <PencilIcon />
                                                 </Link>
                                             </Button>
                                         )}

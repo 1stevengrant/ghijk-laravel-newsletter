@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
 import React, { useState } from 'react';
+import { PlusIcon } from 'lucide-react';
 
 export const AddNewList = () => {
     const [open, setOpen] = useState(false);
@@ -40,7 +41,10 @@ export const AddNewList = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Add New List</Button>
+                <Button>
+                    <PlusIcon />
+                    Add New List
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Add New List</DialogTitle>
