@@ -18,7 +18,8 @@
       "Bash(grep:*)",
       "Bash(curl:*)",
       "Bash(php:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
