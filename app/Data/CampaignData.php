@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Data;
+
+use App\Models\Campaign;
+use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+
+#[TypeScript]
+class CampaignData extends Data
+{
+    public function __construct(
+        public int $id,
+        public string $name,
+        public ?string $subject,
+        public ?string $content,
+        public int $newsletter_list_id,
+        public string $status,
+        public ?string $scheduled_at,
+        public ?string $sent_at,
+        public int $sent_count,
+        public int $opens,
+        public int $clicks,
+        public int $unsubscribes,
+        public int $bounces,
+        public float $open_rate,
+        public float $click_rate,
+        public float $unsubscribe_rate,
+        public float $bounce_rate,
+        public bool $can_send,
+        public ?NewsletterListData $newsletter_list = null,
+    ) {}
+
+    public static function fromModel(Campaign $campaign): self
+    {
+        // Calculate can_send based on the campaign model
+        $canSend = $campaign->canSend();
+
+        return new self(
+            id: $campaign->id,
+            name: $campaign->name,
+            subject: $campaign->subject,
+            content: $campaign->content,
+            newsletter_list_id: $campaign->newsletter_list_id,
+            status: $campaign->status,
+            scheduled_at: $campaign->scheduled_at?->toISOString(),
+            sent_at: $campaign->sent_at?->toISOString(),
+            sent_count: $campaign->sent_count,
+            opens: $campaign->opens,
+            clicks: $campaign->clicks,
+            unsubscribes: $campaign->unsubscribes,
+            bounces: $campaign->bounces,
+            open_rate: $campaign->open_rate,
+            click_rate: $campaign->click_rate,
+            unsubscribe_rate: $campaign->unsubscribe_rate,
+            bounce_rate: $campaign->bounce_rate,
+            can_send: $canSend,
+            newsletter_list: $campaign->relationLoaded('newsletterList') ?
+                NewsletterListData::from($campaign->newsletterList) : null,
+        );
+    }
+}

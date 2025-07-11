@@ -16,6 +16,8 @@
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-ray": "^1.40",
         "spatie/laravel-typescript-transformer": "^2.5",
+        "symfony/http-client": "^7.3",
+        "symfony/postmark-mailer": "^7.3",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

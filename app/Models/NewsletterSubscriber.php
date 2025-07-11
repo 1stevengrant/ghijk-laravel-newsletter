@@ -25,11 +25,20 @@ class NewsletterSubscriber extends Model
             if (! $subscriber->verification_token) {
                 $subscriber->verification_token = Str::uuid()->toString();
             }
+            // create an unsubscribe token if it doesn't exist
+            if (! $subscriber->unsubscribe_token) {
+                $subscriber->unsubscribe_token = Str::uuid()->toString();
+            }
         });
     }
 
     public function lists(): BelongsToMany
     {
         return $this->belongsToMany(NewsletterList::class);
+    }
+
+    public function getNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name) ?: $this->email;
     }
 }

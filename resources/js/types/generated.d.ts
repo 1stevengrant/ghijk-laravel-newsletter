@@ -1,4 +1,25 @@
 declare namespace App.Data {
+export type CampaignData = {
+id: number;
+name: string;
+subject: string | null;
+content: string | null;
+newsletter_list_id: number;
+status: string;
+scheduled_at: string | null;
+sent_at: string | null;
+sent_count: number;
+opens: number;
+clicks: number;
+unsubscribes: number;
+bounces: number;
+open_rate: number;
+click_rate: number;
+unsubscribe_rate: number;
+bounce_rate: number;
+can_send: boolean;
+newsletter_list: App.Data.NewsletterListData | null;
+};
 export type NewsletterListData = {
 id: number;
 name: string;

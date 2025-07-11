@@ -16,4 +16,9 @@ class NewsletterList extends Model
     {
         return $this->hasMany(NewsletterSubscriber::class);
     }
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
 }
