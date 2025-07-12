@@ -14,7 +14,9 @@ class NewsletterSubscriberData extends Data
         public ?string $first_name = null,
         public ?string $last_name = null,
         public ?string $subscribed_at = null,
+        public ?string $unsubscribed_at = null,
         public ?string $verification_token = null,
         public ?int $newsletter_list_id = null,
+        public ?string $status = null,
     ) {}
 }

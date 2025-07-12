@@ -39,7 +39,7 @@ class SendCampaignJob implements ShouldQueue
         }
 
         $subscribers = $this->campaign->newsletterList->subscribers()
-            ->where('status', 'subscribed')
+            ->whereSubscribed()
             ->get();
 
         $sentCount = 0;

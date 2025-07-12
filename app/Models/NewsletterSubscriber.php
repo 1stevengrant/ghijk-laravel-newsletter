@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Database\Factories\NewsletterSubscriberFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\QueryBuilders\NewsletterSubscriberQueryBuilder;
 
 class NewsletterSubscriber extends Model
 {
@@ -40,5 +41,10 @@ class NewsletterSubscriber extends Model
     public function getNameAttribute(): string
     {
         return trim($this->first_name . ' ' . $this->last_name) ?: $this->email;
+    }
+
+    public function newEloquentBuilder($query): NewsletterSubscriberQueryBuilder
+    {
+        return new NewsletterSubscriberQueryBuilder($query);
     }
 }

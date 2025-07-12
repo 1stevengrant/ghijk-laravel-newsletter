@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -9,6 +9,7 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
+import { Switch } from '@/components/ui/switch';
 import DeleteSubscriber from '@/components/subscribers/delete-subscriber';
 import { AddNewSubscriber } from '@/components/subscribers/add-new-subscriber';
 
@@ -17,6 +18,8 @@ import { AddNewSubscriber } from '@/components/subscribers/add-new-subscriber';
 export default function Show({ list }: {
     list: App.Data.NewsletterListData
 }) {
+    const { post: toggleStatus, processing: toggling } = useForm();
+
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
@@ -32,6 +35,10 @@ export default function Show({ list }: {
         }
     ];
 
+    const handleToggleSubscriber = (subscriberId: number) => {
+        toggleStatus(route('subscribers.toggle-status', subscriberId));
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={list.name} />
@@ -44,7 +51,7 @@ export default function Show({ list }: {
                         <TableRow>
                             <TableHead>Name</TableHead>
                             <TableHead>Email</TableHead>
-                            <TableHead>Subscribed On</TableHead>
+                            <TableHead>Status</TableHead>
                             <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -56,10 +63,36 @@ export default function Show({ list }: {
                                     {subscriber.email}
                                 </TableCell>
                                 <TableCell>
-                                    {subscriber.subscribed_at}
+                                    <div className="flex flex-col space-y-2">
+                                        {subscriber.status === 'subscribed' && subscriber.subscribed_at && (
+                                            <>
+                                                <span className="text-sm">Subscribed</span>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {new Date(subscriber.subscribed_at).toLocaleDateString()}
+                                                </span>
+                                            </>
+                                        )}
+                                        {subscriber.status === 'unsubscribed' && subscriber.unsubscribed_at && (
+                                            <>
+                                                <span className="text-sm">Unsubscribed</span>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {new Date(subscriber.unsubscribed_at).toLocaleDateString()}
+                                                </span>
+                                            </>
+                                        )}
+                                        {subscriber.status === 'pending' && (
+                                            <span className="text-sm text-muted-foreground">Pending verification</span>
+                                        )}
+                                        <Switch
+                                            checked={subscriber.status === 'subscribed'}
+                                            onCheckedChange={() => handleToggleSubscriber(subscriber.id)}
+                                            disabled={toggling}
+                                            aria-label={`Toggle subscription for ${subscriber.email}`}
+                                        />
+                                    </div>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="space-x-2">
+                                    <div className="space-y-2">
                                         <DeleteSubscriber subscriber={subscriber} />
                                     </div>
                                 </TableCell>

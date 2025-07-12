@@ -80,7 +80,9 @@ email: string;
 first_name: string | null;
 last_name: string | null;
 subscribed_at: string | null;
+unsubscribed_at: string | null;
 verification_token: string | null;
 newsletter_list_id: number | null;
+status: string | null;
 };
 }

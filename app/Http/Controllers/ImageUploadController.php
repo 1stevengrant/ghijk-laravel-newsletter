@@ -25,7 +25,7 @@ class ImageUploadController extends Controller
 
         // Process the image using Intervention Image v3
         $processedImage = $manager->read($uploadedFile->getRealPath())
-            ->scaleDown(800); // Max width 800px, maintains aspect ratio
+            ->scaleDown(600); // Max width 800px, maintains aspect ratio
 
         // Get dimensions before encoding
         $width = $processedImage->width();

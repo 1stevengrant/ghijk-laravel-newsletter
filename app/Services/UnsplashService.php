@@ -2,7 +2,14 @@
 
 namespace App\Services;
 
+use Exception;
+use App\Models\Image;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 use App\Http\Integrations\UnsplashConnector;
 use Saloon\Exceptions\Request\RequestException;
 use App\Http\Integrations\Requests\GetPhotoRequest;
@@ -111,7 +118,7 @@ class UnsplashService
 
             // Download the image from Unsplash (use regular size for good quality/performance balance)
             $imageUrl = $photo['urls']['regular'];
-            $imageResponse = \Illuminate\Support\Facades\Http::get($imageUrl);
+            $imageResponse = Http::get($imageUrl);
 
             if ($imageResponse->failed()) {
                 Log::error('Failed to download Unsplash image', [
@@ -129,7 +136,7 @@ class UnsplashService
                 $campaignId
             );
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Unsplash download and save error', [
                 'photo_id' => $photoId,
                 'error' => $e->getMessage(),
@@ -144,14 +151,14 @@ class UnsplashService
      */
     private function processAndSaveImage(string $imageData, array $photo, ?int $campaignId = null): array
     {
-        $filename = \Illuminate\Support\Str::uuid() . '.jpg';
+        $filename = Str::uuid() . '.jpg';
 
         // Create ImageManager instance (same as ImageUploadController)
-        $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver);
+        $manager = new ImageManager(new Driver);
 
         // Process the image
         $processedImage = $manager->read($imageData)
-            ->scaleDown(800); // Max width 800px, maintains aspect ratio
+            ->scaleDown(600); // Max width 800px, maintains aspect ratio
 
         // Get dimensions
         $width = $processedImage->width();
@@ -163,18 +170,18 @@ class UnsplashService
         // Store the processed image
         if ($campaignId) {
             $path = "campaign-images/campaign-{$campaignId}/{$filename}";
-            \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory("campaign-images/campaign-{$campaignId}");
+            Storage::disk('public')->makeDirectory("campaign-images/campaign-{$campaignId}");
         } else {
             $path = "campaign-images/{$filename}";
         }
 
-        \Illuminate\Support\Facades\Storage::disk('public')->put($path, $encodedImage->toString());
+        Storage::disk('public')->put($path, $encodedImage->toString());
 
         // Create Image record in database
-        $image = \App\Models\Image::create([
+        $image = Image::create([
             'filename' => $filename,
             'path' => $path,
-            'url' => \Illuminate\Support\Facades\Storage::disk('public')->url($path),
+            'url' => Storage::disk('public')->url($path),
             'original_filename' => 'unsplash-' . $photo['id'] . '.jpg',
             'mime_type' => 'image/jpeg',
             'size' => mb_strlen($encodedImage->toString()),
@@ -188,8 +195,8 @@ class UnsplashService
             'success' => true,
             'id' => $image->id,
             'path' => $path,
-            'url' => \Illuminate\Support\Facades\Storage::disk('public')->url($path),
-            'full_url' => url(\Illuminate\Support\Facades\Storage::disk('public')->url($path)),
+            'url' => Storage::disk('public')->url($path),
+            'full_url' => url(Storage::disk('public')->url($path)),
             'unsplash_attribution' => [
                 'photographer' => $photo['user']['name'],
                 'photographer_url' => $photo['user']['profile_url'],
