@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'unsplash' => [
+        'application_id' => env('UNSPLASH_APPLICATION_ID'),
+        'access_key' => env('UNSPLASH_ACCESS_KEY'),
+        'secret_key' => env('UNSPLASH_SECRET_KEY'),
+        'base_url' => 'https://api.unsplash.com',
+    ],
+
 ];

@@ -16,6 +16,8 @@
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.10.1",
         "romanzipp/laravel-queue-monitor": "^5.4",
+        "saloonphp/laravel-plugin": "^3.6",
+        "saloonphp/saloon": "^3.0",
         "sentry/sentry-laravel": "^4.15",
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-ray": "^1.40",
