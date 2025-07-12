@@ -1,6 +1,48 @@
 import { Link } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Home() {
+    const [email, setEmail] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setMessage(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('email', email);
+
+            const response = await fetch('/newsletter/iorT2peq/subscribe', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setMessage({ type: 'success', text: data.message });
+                setEmail('');
+            } else {
+                throw new Error(data.message || 'An error occurred');
+            }
+        } catch (error) {
+            setMessage({
+                type: 'error',
+                text: error instanceof Error ? error.message : 'An error occurred. Please try again.'
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#faf6eb] text-slate-900 antialiased">
             {/* Nav */}
@@ -42,23 +84,37 @@ export default function Home() {
                     </p>
 
                     <form
-                        action="/early-access"
-                        method="POST"
-                        className="mt-10 flex w-full max-w-lg mx-auto"
+                        onSubmit={handleSubmit}
+                        className="mt-10 w-full max-w-lg mx-auto"
                     >
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            required
-                            className="flex-grow rounded-l-lg border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-amber-600"
-                        />
-                        <button
-                            type="submit"
-                            className="rounded-r-lg bg-amber-600 px-6 py-3 text-base font-semibold text-[#faf6eb] hover:bg-amber-700 transition hover:cursor-pointer border-2 border-amber-600"
-                        >
-                            Get started
-                        </button>
+                        <div className="flex">
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email"
+                                required
+                                disabled={isSubmitting}
+                                className="flex-grow rounded-l-lg border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-amber-600 disabled:opacity-50"
+                            />
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="rounded-r-lg bg-amber-600 px-6 py-3 text-base font-semibold text-[#faf6eb] hover:bg-amber-700 transition hover:cursor-pointer border-2 border-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting ? 'Subscribing...' : 'Get started'}
+                            </button>
+                        </div>
+                        
+                        {message && (
+                            <div className={`mt-4 p-3 rounded-lg text-sm ${
+                                message.type === 'success' 
+                                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                                    : 'bg-red-100 text-red-800 border border-red-200'
+                            }`}>
+                                {message.text}
+                            </div>
+                        )}
                     </form>
                 </section>
 
