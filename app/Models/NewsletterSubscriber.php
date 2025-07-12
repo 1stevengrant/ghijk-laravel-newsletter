@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\NewsletterSubscriberFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class NewsletterSubscriber extends Model
 {
@@ -32,9 +32,9 @@ class NewsletterSubscriber extends Model
         });
     }
 
-    public function lists(): BelongsToMany
+    public function newsletterList(): BelongsTo
     {
-        return $this->belongsToMany(NewsletterList::class);
+        return $this->belongsTo(NewsletterList::class);
     }
 
     public function getNameAttribute(): string

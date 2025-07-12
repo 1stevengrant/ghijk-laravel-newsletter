@@ -39,6 +39,32 @@ can_delete: boolean;
 blocks: Array<App.Data.BlockData> | null;
 newsletter_list: App.Data.NewsletterListData | null;
 };
+export type ImportData = {
+id: number;
+filename: string;
+original_filename: string;
+status: string;
+newsletter_list_id: number | null;
+new_list_data: Array<App.Data.NewListData> | null;
+total_rows: number;
+processed_rows: number;
+successful_rows: number;
+failed_rows: number;
+errors: Array<App.Data.ImportErrorData> | null;
+started_at: string | null;
+completed_at: string | null;
+progress_percentage: number;
+newsletter_list: App.Data.NewsletterListData | null;
+};
+export type ImportErrorData = {
+row: number;
+message: string;
+email: string | null;
+};
+export type NewListData = {
+name: string;
+description: string | null;
+};
 export type NewsletterListData = {
 id: number;
 name: string;

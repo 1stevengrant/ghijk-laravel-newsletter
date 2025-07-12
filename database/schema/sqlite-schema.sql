@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS "users"(
   "remember_token" varchar,
   "created_at" datetime,
   "updated_at" datetime
+  ,
+  "super_admin" tinyint(1) not null default '0'
 );
 CREATE UNIQUE INDEX "users_email_unique" on "users"("email");
 CREATE TABLE IF NOT EXISTS "password_reset_tokens"(
@@ -115,6 +117,7 @@ CREATE TABLE IF NOT EXISTS "campaigns"(
   "updated_at" datetime,
   "subject" varchar,
   "content" text,
+  "blocks" text,
   foreign key("newsletter_list_id") references "newsletter_lists"("id") on delete cascade
 );
 CREATE TABLE IF NOT EXISTS "campaign_opens"(
@@ -133,6 +136,66 @@ CREATE UNIQUE INDEX "campaign_opens_campaign_id_newsletter_subscriber_id_unique"
   "campaign_id",
   "newsletter_subscriber_id"
 );
+CREATE TABLE IF NOT EXISTS "images"(
+  "id" integer primary key autoincrement not null,
+  "filename" varchar not null,
+  "path" varchar not null,
+  "url" varchar not null,
+  "original_filename" varchar not null,
+  "mime_type" varchar not null,
+  "size" integer not null,
+  "width" integer,
+  "height" integer,
+  "alt_text" varchar,
+  "user_id" integer not null,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("user_id") references "users"("id") on delete cascade
+);
+CREATE INDEX "images_user_id_created_at_index" on "images"(
+  "user_id",
+  "created_at"
+);
+CREATE TABLE IF NOT EXISTS "queue_monitor"(
+  "id" integer primary key autoincrement not null,
+  "job_uuid" varchar,
+  "job_id" varchar not null,
+  "name" varchar,
+  "queue" varchar,
+  "status" integer not null default '0',
+  "queued_at" datetime,
+  "started_at" datetime,
+  "started_at_exact" varchar,
+  "finished_at" datetime,
+  "finished_at_exact" varchar,
+  "attempt" integer not null default '0',
+  "retried" tinyint(1) not null default '0',
+  "progress" integer,
+  "exception" text,
+  "exception_message" text,
+  "exception_class" text,
+  "data" text
+);
+CREATE INDEX "queue_monitor_job_id_index" on "queue_monitor"("job_id");
+CREATE INDEX "queue_monitor_started_at_index" on "queue_monitor"("started_at");
+CREATE TABLE IF NOT EXISTS "imports"(
+  "id" integer primary key autoincrement not null,
+  "filename" varchar not null,
+  "original_filename" varchar not null,
+  "status" varchar check("status" in('pending', 'processing', 'completed', 'failed')) not null default 'pending',
+  "newsletter_list_id" integer,
+  "new_list_data" text,
+  "total_rows" integer not null default '0',
+  "processed_rows" integer not null default '0',
+  "successful_rows" integer not null default '0',
+  "failed_rows" integer not null default '0',
+  "errors" text,
+  "started_at" datetime,
+  "completed_at" datetime,
+  "created_at" datetime,
+  "updated_at" datetime,
+  foreign key("newsletter_list_id") references "newsletter_lists"("id") on delete set null
+);
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'0001_01_01_000001_create_cache_table',1);
@@ -143,3 +206,8 @@ INSERT INTO migrations VALUES(6,'2025_07_11_005228_create_campaigns_table',1);
 INSERT INTO migrations VALUES(7,'2025_07_11_010559_add_email_content_to_campaigns_table',1);
 INSERT INTO migrations VALUES(8,'2025_07_11_011016_add_unsubscribe_token_and_status_to_newsletter_subscribers_table',1);
 INSERT INTO migrations VALUES(9,'2025_07_11_015208_create_campaign_opens_table',1);
+INSERT INTO migrations VALUES(10,'2025_07_11_090730_add_blocks_field_to_campaigns_table',2);
+INSERT INTO migrations VALUES(11,'2025_07_11_103623_create_images_table',2);
+INSERT INTO migrations VALUES(12,'2018_02_05_000000_create_queue_monitor_table',3);
+INSERT INTO migrations VALUES(13,'2025_07_11_211546_add_super_admin_flag_to_users_table',3);
+INSERT INTO migrations VALUES(14,'2025_07_12_000230_create_imports_table',4);

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImageUploadController;
@@ -30,6 +31,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
     Route::post('campaigns/{campaign}/images/upload', [ImageUploadController::class, 'store'])->name('campaigns.images.upload');
     Route::delete('images', [ImageUploadController::class, 'destroy'])->name('images.destroy');
+    Route::post('imports', [ImportController::class, 'store'])->name('imports.store');
+    Route::get('imports/{import}', [ImportController::class, 'show'])->name('imports.show');
 });
 
 // Email tracking routes (no middleware required)

@@ -9,3 +9,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('campaigns', function () {
     return auth()->check();
 });
+
+Broadcast::channel('imports', function () {
+    return auth()->check();
+});

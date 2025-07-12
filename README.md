@@ -130,14 +130,10 @@ This will start the Laravel server, queue worker, and Vite development server co
 ### 🔧 Phase 3: Automation & Integration
 - [ ] **Drip Campaigns** - Automated email sequences
 - [ ] **Trigger-Based Emails** - Welcome series, birthday emails
-- [ ] **API Integration** - REST API for third-party integrations
-- [ ] **Webhooks** - Real-time event notifications
-- [ ] **Zapier Integration** - Connect with 3000+ apps
 
 ### 📱 Phase 4: User Experience
 - [ ] **Team Management** - Multi-user support with roles
 - [ ] **White Label** - Customizable branding options
-- [ ] **Multi-language** - Internationalization support
 
 ### 🛡️ Phase 5: Advanced Features
 - [ ] **GDPR Compliance** - Data protection and consent management

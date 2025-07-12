@@ -19,7 +19,9 @@
       "Bash(curl:*)",
       "Bash(php:*)",
       "Bash(sqlite3:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }
