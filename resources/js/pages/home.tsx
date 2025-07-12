@@ -32,7 +32,7 @@ export default function Home() {
             </header>
 
             {/* Hero */}
-            <main className="px-6 pb-24">
+            <main className="px-6 pb-24 mt-24">
                 <section className="max-w-3xl mx-auto text-center">
                     <h1 className="font-serif text-5xl md:text-6xl font-bold leading-tight tracking-tight">
                         Where messages<br className="hidden md:block" /> meet the moment

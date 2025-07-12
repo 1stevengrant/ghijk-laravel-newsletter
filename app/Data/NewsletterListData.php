@@ -11,6 +11,7 @@ class NewsletterListData extends Data
     public function __construct(
         public int $id,
         public string $name,
+        public string $shortcode,
         public ?string $description,
         public string $from_email,
         public string $from_name,

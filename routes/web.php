@@ -9,6 +9,7 @@ use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\SendCampaignController;
 use App\Http\Controllers\NewsletterListController;
 use App\Http\Controllers\BulkDeleteListsController;
+use App\Http\Controllers\PublicNewsletterController;
 use App\Http\Controllers\Email\TrackEmailOpenController;
 use App\Http\Controllers\NewsletterSubscriberController;
 use App\Http\Controllers\Email\TrackEmailClickController;
@@ -48,6 +49,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('track/open/{campaign}/{subscriber}', TrackEmailOpenController::class)->name('campaign.track.open');
 Route::get('track/click/{campaign}/{subscriber}', TrackEmailClickController::class)->name('campaign.track.click');
 Route::get('unsubscribe', UnsubscribeEmailController::class)->name('newsletter.unsubscribe');
+
+// Public newsletter signup routes
+Route::get('newsletter/{shortcode}', [PublicNewsletterController::class, 'show'])->name('newsletter.signup');
+Route::post('newsletter/{shortcode}/subscribe', [PublicNewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

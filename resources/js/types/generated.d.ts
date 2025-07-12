@@ -68,6 +68,7 @@ description: string | null;
 export type NewsletterListData = {
 id: number;
 name: string;
+shortcode: string;
 description: string | null;
 from_email: string;
 from_name: string;

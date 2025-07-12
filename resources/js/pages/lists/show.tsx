@@ -12,6 +12,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import DeleteSubscriber from '@/components/subscribers/delete-subscriber';
 import { AddNewSubscriber } from '@/components/subscribers/add-new-subscriber';
+import { EmbedFormSnippet } from '@/components/lists/embed-form-snippet';
 
 
 
@@ -43,8 +44,9 @@ export default function Show({ list }: {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={list.name} />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-                <div>
+                <div className="flex justify-between items-center">
                     <AddNewSubscriber listId={list.id} />
+                    <EmbedFormSnippet list={list} />
                 </div>
                 <Table>
                     <TableHeader>
