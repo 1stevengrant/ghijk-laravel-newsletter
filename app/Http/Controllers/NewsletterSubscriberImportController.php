@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Import;
 use Illuminate\Http\Request;
-use App\Events\ImportStarted;
 use App\Jobs\ProcessImportJob;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,11 +48,6 @@ class NewsletterSubscriberImportController extends Controller
 
         ProcessImportJob::dispatch($import);
 
-        // Dispatch started event immediately so frontend gets notification
-        ImportStarted::dispatch($import);
-
-        return response()->json([
-            'message' => 'Import started successfully',
-        ]);
+        return back()->with('success', 'Import started successfully');
     }
 }

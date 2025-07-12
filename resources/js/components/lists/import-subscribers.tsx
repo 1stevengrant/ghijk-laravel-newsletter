@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -71,31 +72,22 @@ export default function ImportSubscribers({ lists }: ImportSubscribersProps) {
             formData.append('new_list_from_email', newListData.from_email);
         }
 
-        try {
-            const response = await fetch(route('imports.store'), {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
+        router.post(route('imports.store'), formData, {
+            onSuccess: () => {
                 setIsOpen(false);
                 setFile(null);
                 setSelectedListId('');
                 setNewListData({ name: '', description: '', from_name: '', from_email: '' });
-            } else {
-                toast.error(data.message || 'Import failed to start');
+                toast.success('Import started successfully');
+            },
+            onError: (errors) => {
+                const errorMessage = errors.message || Object.values(errors)[0] || 'Import failed to start';
+                toast.error(errorMessage);
+            },
+            onFinish: () => {
+                setIsSubmitting(false);
             }
-        } catch (error) {
-            console.log(error)
-            toast.error('An error occurred while starting the import');
-        } finally {
-            setIsSubmitting(false);
-        }
+        });
     };
 
 
