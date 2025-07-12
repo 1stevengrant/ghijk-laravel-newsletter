@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\SendCampaignController;
 use App\Http\Controllers\NewsletterListController;
+use App\Http\Controllers\BulkDeleteListsController;
 use App\Http\Controllers\Email\TrackEmailOpenController;
 use App\Http\Controllers\NewsletterSubscriberController;
 use App\Http\Controllers\Email\TrackEmailClickController;
@@ -19,6 +20,7 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::delete('lists/bulk-delete', BulkDeleteListsController::class)->name('lists.bulk-delete');
     Route::resource('lists', NewsletterListController::class)
         ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->names('lists');

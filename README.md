@@ -114,6 +114,7 @@ This will start the Laravel server, queue worker, and Vite development server co
 ## Future Roadmap
 
 ### 🚀 Phase 1: Enhanced Email Features
+- [ ] **Own Domain** - Allow users to send from their own domain with DNS records
 - [ ] **Email Templates** - Pre-built responsive email templates
 - [ ] **A/B Testing** - Split test subject lines and content
 - [ ] **Personalization** - Dynamic content based on subscriber data
