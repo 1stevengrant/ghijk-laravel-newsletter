@@ -1,4 +1,4 @@
-import { type Block } from '@/components/editor/block-builder';
+import { type Block, type BlockType } from '@/components/editor/block-builder';
 
 export const convertBlocksToHtml = (blocks: Block[]): string => {
     return blocks.map(block => {
@@ -30,7 +30,23 @@ export const convertBlocksToHtml = (blocks: Block[]): string => {
 };
 
 export const initializeBlocksFromCampaign = (campaign: App.Data.CampaignData): Block[] => {
-    return (campaign.blocks && Array.isArray(campaign.blocks)) ? campaign.blocks : [];
+    if (!campaign.blocks || !Array.isArray(campaign.blocks)) {
+        return [];
+    }
+    
+    return campaign.blocks.map(blockData => ({
+        id: blockData.id,
+        type: blockData.type as BlockType,
+        content: blockData.content || '',
+        settings: blockData.settings ? {
+            imageId: blockData.settings.imageId || undefined,
+            imageUrl: blockData.settings.imageUrl || undefined,
+            imageAlt: blockData.settings.imageAlt || undefined,
+            imagePath: blockData.settings.imagePath || undefined,
+            listType: (blockData.settings.listType as 'bulleted' | 'numbered') || undefined,
+            quoteAuthor: blockData.settings.quoteAuthor || undefined,
+        } : undefined
+    }));
 };
 
 export const shouldUseBlocksMode = (campaign: App.Data.CampaignData): boolean => {
