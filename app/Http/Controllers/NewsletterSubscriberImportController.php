@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Import;
-use App\Data\ImportData;
 use Illuminate\Http\Request;
 use App\Events\ImportStarted;
 use App\Jobs\ProcessImportJob;
 use Illuminate\Support\Facades\Storage;
 
-class ImportController extends Controller
+class NewsletterSubscriberImportController extends Controller
 {
     public function store(Request $request)
     {
@@ -55,16 +54,6 @@ class ImportController extends Controller
 
         return response()->json([
             'message' => 'Import started successfully',
-            'import' => ImportData::fromModel($import),
-        ]);
-    }
-
-    public function show(Import $import)
-    {
-        $import->load('newsletterList');
-
-        return response()->json([
-            'import' => ImportData::fromModel($import),
         ]);
     }
 }
