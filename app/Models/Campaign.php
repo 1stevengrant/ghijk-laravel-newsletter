@@ -27,6 +27,26 @@ class Campaign extends Model
         'blocks' => 'array',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($campaign) {
+            if (empty($campaign->shortcode)) {
+                $campaign->shortcode = self::generateShortcode();
+            }
+        });
+    }
+
+    private static function generateShortcode(): string
+    {
+        do {
+            $shortcode = mb_substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
+        } while (self::where('shortcode', $shortcode)->exists());
+
+        return $shortcode;
+    }
+
     public function newEloquentBuilder($query): CampaignQueryBuilder
     {
         return new CampaignQueryBuilder($query);

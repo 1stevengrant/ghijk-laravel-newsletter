@@ -36,6 +36,7 @@ bounce_rate: number;
 can_send: boolean;
 can_edit: boolean;
 can_delete: boolean;
+shortcode: string | null;
 blocks: Array<App.Data.BlockData> | null;
 newsletter_list: App.Data.NewsletterListData | null;
 };

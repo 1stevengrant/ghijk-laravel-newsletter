@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormEvent, useState } from 'react';
-import { PencilIcon, SendIcon, Trash2Icon } from 'lucide-react';
+import { ExternalLinkIcon, PencilIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -70,6 +70,18 @@ export default function ShowCampaign({ campaign }: {
                         </Badge>
                     </div>
                     <div className="flex gap-2">
+                        {campaign.shortcode && campaign.status === 'sent' && (
+                            <Button variant="outline" asChild>
+                                <a 
+                                    href={route('campaign.view', campaign.shortcode)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <ExternalLinkIcon />
+                                    View Public
+                                </a>
+                            </Button>
+                        )}
                         {canSend && (
                             <form onSubmit={handleSend}>
                                 <Button className="bg-green-600 text-white hover:bg-green-700" type="submit" disabled={processing}>
@@ -209,6 +221,21 @@ export default function ShowCampaign({ campaign }: {
                                     {campaign.bounces} ({campaign.bounce_rate}%)
                                 </dd>
                             </div>
+                            {campaign.shortcode && campaign.status === 'sent' && (
+                                <div>
+                                    <dt className="font-medium">Public View</dt>
+                                    <dd className="text-muted-foreground">
+                                        <a 
+                                            href={route('campaign.view', campaign.shortcode)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:text-blue-800 underline"
+                                        >
+                                            {window.location.origin}/campaign/{campaign.shortcode}
+                                        </a>
+                                    </dd>
+                                </div>
+                            )}
                         </dl>
                     </CardContent>
                 </Card>

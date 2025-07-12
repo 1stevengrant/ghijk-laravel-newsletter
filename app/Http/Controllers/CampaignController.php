@@ -185,4 +185,28 @@ class CampaignController extends Controller
 
         return redirect()->route('campaigns.index')->with('success', 'Campaign deleted successfully.');
     }
+
+    /**
+     * Display the public campaign view.
+     */
+    public function view($shortcode)
+    {
+        $campaign = Campaign::where('shortcode', $shortcode)->firstOrFail();
+
+        // Only show campaigns that have been sent
+        if (! $campaign->isSent()) {
+            abort(404);
+        }
+
+        return inertia('campaigns/public-view', [
+            'campaign' => [
+                'name' => $campaign->name,
+                'subject' => $campaign->subject,
+                'content' => $campaign->content,
+                'blocks' => $campaign->blocks,
+                'sent_at' => $campaign->sent_at,
+                'shortcode' => $campaign->shortcode,
+            ],
+        ]);
+    }
 }

@@ -54,5 +54,8 @@ Route::get('unsubscribe', UnsubscribeEmailController::class)->name('newsletter.u
 Route::get('newsletter/{shortcode}', [PublicNewsletterController::class, 'show'])->name('newsletter.signup');
 Route::post('newsletter/{shortcode}/subscribe', [PublicNewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
+// Public campaign view route
+Route::get('campaign/{shortcode}', [CampaignController::class, 'view'])->name('campaign.view');
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

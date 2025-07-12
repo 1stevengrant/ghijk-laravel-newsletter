@@ -21,7 +21,9 @@
       "Bash(sqlite3:*)",
       "Bash(rm:*)",
       "Bash(ls:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(./vendor/bin/pest)",
+      "Bash(./vendor/bin/pest:*)"
     ],
     "deny": []
   }

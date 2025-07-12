@@ -32,6 +32,7 @@ class CampaignData extends Data
         public bool $can_send,
         public bool $can_edit,
         public bool $can_delete,
+        public ?string $shortcode,
         /** @var BlockData[]|null */
         public ?array $blocks = null,
         public ?NewsletterListData $newsletter_list = null,
@@ -67,6 +68,7 @@ class CampaignData extends Data
             can_send: $canSend,
             can_edit: $canEdit,
             can_delete: $canDelete,
+            shortcode: $campaign->shortcode,
             blocks: $campaign->blocks ? BlockData::collect($campaign->blocks) : null,
             newsletter_list: $campaign->relationLoaded('newsletterList') ?
                 NewsletterListData::from($campaign->newsletterList) : null,
