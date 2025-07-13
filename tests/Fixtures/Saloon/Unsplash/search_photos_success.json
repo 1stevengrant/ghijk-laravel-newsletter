@@ -1,0 +1,37 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "results": [
+      {
+        "id": "photo-1",
+        "description": "Beautiful landscape",
+        "alt_description": "Mountain view",
+        "urls": {
+          "thumb": "https://images.unsplash.com/photo-1/thumb",
+          "small": "https://images.unsplash.com/photo-1/small",
+          "regular": "https://images.unsplash.com/photo-1/regular",
+          "full": "https://images.unsplash.com/photo-1/full",
+          "raw": "https://images.unsplash.com/photo-1/raw"
+        },
+        "links": {
+          "download": "https://unsplash.com/photos/photo-1/download",
+          "download_location": "https://api.unsplash.com/photos/photo-1/download"
+        },
+        "width": 1920,
+        "height": 1080,
+        "user": {
+          "name": "John Photographer",
+          "username": "johnphoto",
+          "links": {
+            "html": "https://unsplash.com/@johnphoto"
+          }
+        }
+      }
+    ],
+    "total": 1000,
+    "total_pages": 50
+  }
+}

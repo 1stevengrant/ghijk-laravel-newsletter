@@ -1,0 +1,31 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "id": "campaign-photo",
+    "description": "Campaign image",
+    "alt_description": "Campaign image alt",
+    "urls": {
+      "thumb": "https://images.unsplash.com/campaign-image/thumb",
+      "small": "https://images.unsplash.com/campaign-image/small",
+      "regular": "https://images.unsplash.com/campaign-image.jpg",
+      "full": "https://images.unsplash.com/campaign-image/full",
+      "raw": "https://images.unsplash.com/campaign-image/raw"
+    },
+    "links": {
+      "download": "https://unsplash.com/photos/campaign-photo/download",
+      "download_location": "https://api.unsplash.com/photos/campaign-photo/download"
+    },
+    "width": 1600,
+    "height": 900,
+    "user": {
+      "name": "Campaign Photographer",
+      "username": "campaignphoto",
+      "links": {
+        "html": "https://unsplash.com/@campaignphoto"
+      }
+    }
+  }
+}

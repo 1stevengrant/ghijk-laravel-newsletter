@@ -1,7 +1,10 @@
 {
     "preset": "laravel",
-    "notName": ["*.json"],
+    "notName": [
+        "*.json"
+    ],
     "rules": {
+        "no_unneeded_curly_braces": true,
         "array_push": true,
         "mb_str_functions": true,
         "modernize_types_casting": true,

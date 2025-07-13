@@ -25,11 +25,11 @@ test('command generates shortcodes for campaigns without them', function () {
     $campaign1->refresh();
     $campaign2->refresh();
 
-    expect($campaign1->shortcode)->not->toBeNull();
-    expect($campaign2->shortcode)->not->toBeNull();
-    expect(mb_strlen($campaign1->shortcode))->toBe(8);
-    expect(mb_strlen($campaign2->shortcode))->toBe(8);
-    expect($campaign1->shortcode)->not->toBe($campaign2->shortcode);
+    expect($campaign1->shortcode)->not->toBeNull()
+        ->and($campaign2->shortcode)->not->toBeNull()
+        ->and(mb_strlen($campaign1->shortcode))->toBe(8)
+        ->and(mb_strlen($campaign2->shortcode))->toBe(8)
+        ->and($campaign1->shortcode)->not->toBe($campaign2->shortcode);
 });
 
 test('command shows dry run without making changes', function () {

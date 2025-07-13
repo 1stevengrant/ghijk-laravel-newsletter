@@ -72,7 +72,7 @@ export default function ShowCampaign({ campaign }: {
                     <div className="flex gap-2">
                         {campaign.shortcode && campaign.status === 'sent' && (
                             <Button variant="outline" asChild>
-                                <a 
+                                <a
                                     href={route('campaign.view', campaign.shortcode)}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -221,21 +221,6 @@ export default function ShowCampaign({ campaign }: {
                                     {campaign.bounces} ({campaign.bounce_rate}%)
                                 </dd>
                             </div>
-                            {campaign.shortcode && campaign.status === 'sent' && (
-                                <div>
-                                    <dt className="font-medium">Public View</dt>
-                                    <dd className="text-muted-foreground">
-                                        <a 
-                                            href={route('campaign.view', campaign.shortcode)}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:text-blue-800 underline"
-                                        >
-                                            {window.location.origin}/campaign/{campaign.shortcode}
-                                        </a>
-                                    </dd>
-                                </div>
-                            )}
                         </dl>
                     </CardContent>
                 </Card>
@@ -246,7 +231,7 @@ export default function ShowCampaign({ campaign }: {
                             <CardTitle>Email Content</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div 
+                            <div
                                 className="prose prose-sm max-w-none"
                                 dangerouslySetInnerHTML={{ __html: campaign.content }}
                             />

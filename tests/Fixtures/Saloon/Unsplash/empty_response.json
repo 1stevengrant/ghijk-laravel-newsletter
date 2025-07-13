@@ -1,0 +1,11 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "results": [],
+    "total": 0,
+    "total_pages": 0
+  }
+}

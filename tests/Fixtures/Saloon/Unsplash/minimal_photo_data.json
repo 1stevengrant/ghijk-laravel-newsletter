@@ -1,0 +1,15 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "id": "minimal-photo",
+    "urls": {
+      "regular": "https://images.unsplash.com/minimal.jpg"
+    },
+    "user": {
+      "name": "Minimal User"
+    }
+  }
+}

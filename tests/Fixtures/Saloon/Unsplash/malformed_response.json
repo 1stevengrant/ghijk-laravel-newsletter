@@ -1,0 +1,9 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "unexpected_field": "value"
+  }
+}

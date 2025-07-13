@@ -1,0 +1,19 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "id": "failed-download",
+    "description": "Failed download photo",
+    "urls": {
+      "regular": "https://images.unsplash.com/failed-image.jpg"
+    },
+    "user": {
+      "name": "Failed Photographer",
+      "links": {
+        "html": "https://unsplash.com/@failedphoto"
+      }
+    }
+  }
+}

@@ -126,6 +126,7 @@ class ProcessImportJob implements ShouldQueue
                             'last_name' => $lastName,
                             'status' => 'subscribed',
                             'newsletter_list_id' => $newsletterList->id,
+                            'subscribed_at' => now(),
                         ]
                     );
 

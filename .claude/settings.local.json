@@ -23,7 +23,10 @@
       "Bash(ls:*)",
       "Bash(touch:*)",
       "Bash(./vendor/bin/pest)",
-      "Bash(./vendor/bin/pest:*)"
+      "Bash(./vendor/bin/pest:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:docs.saloon.dev)"
     ],
     "deny": []
   }

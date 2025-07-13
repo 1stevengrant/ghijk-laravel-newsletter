@@ -1,0 +1,31 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "data": {
+    "id": "single-photo",
+    "description": "Amazing sunset",
+    "alt_description": "Orange sunset",
+    "urls": {
+      "thumb": "https://images.unsplash.com/sunset/thumb",
+      "small": "https://images.unsplash.com/sunset/small",
+      "regular": "https://images.unsplash.com/sunset/regular",
+      "full": "https://images.unsplash.com/sunset/full",
+      "raw": "https://images.unsplash.com/sunset/raw"
+    },
+    "links": {
+      "download": "https://unsplash.com/photos/sunset/download",
+      "download_location": "https://api.unsplash.com/photos/sunset/download"
+    },
+    "width": 1600,
+    "height": 900,
+    "user": {
+      "name": "Jane Smith",
+      "username": "janesmith",
+      "links": {
+        "html": "https://unsplash.com/@janesmith"
+      }
+    }
+  }
+}

@@ -16,10 +16,6 @@ class NewsletterSubscriberQueryBuilder extends Builder
         return $this->where('status', 'unsubscribed');
     }
 
-    public function wherePending(): self
-    {
-        return $this->where('status', 'pending');
-    }
 
     public function whereStatus(string $status): self
     {
@@ -28,12 +24,12 @@ class NewsletterSubscriberQueryBuilder extends Builder
 
     public function whereVerified(): self
     {
-        return $this->whereNotNull('verified_at');
+        return $this->whereNotNull('email_verified_at');
     }
 
     public function whereUnverified(): self
     {
-        return $this->whereNull('verified_at');
+        return $this->whereNull('email_verified_at');
     }
 
     public function whereEmail(string $email): self
@@ -51,7 +47,6 @@ class NewsletterSubscriberQueryBuilder extends Builder
         return [
             'subscribed' => $this->getModel()->newQuery()->whereSubscribed()->count(),
             'unsubscribed' => $this->getModel()->newQuery()->whereUnsubscribed()->count(),
-            'pending' => $this->getModel()->newQuery()->wherePending()->count(),
         ];
     }
 
