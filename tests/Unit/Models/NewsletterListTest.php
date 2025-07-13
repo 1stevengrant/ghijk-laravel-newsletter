@@ -1,14 +1,14 @@
 <?php
 
+use App\Models\Campaign;
 use App\Models\NewsletterList;
 use App\Models\NewsletterSubscriber;
-use App\Models\Campaign;
 
 describe('NewsletterList Model', function () {
     uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class);
 
     test('has no guarded attributes', function () {
-        expect((new NewsletterList())->getGuarded())->toBe([]);
+        expect((new NewsletterList)->getGuarded())->toBe([]);
     });
 
     test('generates unique shortcode on creation', function () {
@@ -18,14 +18,14 @@ describe('NewsletterList Model', function () {
         expect($list1->shortcode)->not->toBeNull()
             ->and($list2->shortcode)->not->toBeNull()
             ->and($list1->shortcode)->not->toBe($list2->shortcode)
-            ->and(strlen($list1->shortcode))->toBe(8);
+            ->and(mb_strlen($list1->shortcode))->toBe(8);
     });
 
     test('does not override existing shortcode', function () {
         $customShortcode = 'CUSTOM01';
 
         $list = NewsletterList::factory()->create([
-            'shortcode' => $customShortcode
+            'shortcode' => $customShortcode,
         ]);
 
         expect($list->shortcode)->toBe($customShortcode);
@@ -36,7 +36,7 @@ describe('NewsletterList Model', function () {
 
         // Create subscribers for this list
         NewsletterSubscriber::factory()->count(3)->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         expect($list->subscribers)->toHaveCount(3)
@@ -48,7 +48,7 @@ describe('NewsletterList Model', function () {
 
         // Create campaigns for this list
         Campaign::factory()->count(2)->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         expect($list->campaigns)->toHaveCount(2)
@@ -58,7 +58,7 @@ describe('NewsletterList Model', function () {
     test('generates embed form snippet correctly', function () {
         $list = NewsletterList::factory()->create([
             'name' => 'Test Newsletter',
-            'shortcode' => 'TEST1234'
+            'shortcode' => 'TEST1234',
         ]);
 
         $snippet = $list->getEmbedFormSnippet();
@@ -79,7 +79,7 @@ describe('NewsletterList Model', function () {
     test('embed form snippet contains proper form elements', function () {
         $list = NewsletterList::factory()->create([
             'name' => 'Marketing Updates',
-            'shortcode' => 'MARKET01'
+            'shortcode' => 'MARKET01',
         ]);
 
         $snippet = $list->getEmbedFormSnippet();
@@ -101,7 +101,7 @@ describe('NewsletterList Model', function () {
 
     test('embed form snippet contains JavaScript functionality', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'JS123456'
+            'shortcode' => 'JS123456',
         ]);
 
         $snippet = $list->getEmbedFormSnippet();
@@ -134,7 +134,7 @@ describe('NewsletterList Model', function () {
     test('embed form snippet handles dynamic content correctly', function () {
         $list = NewsletterList::factory()->create([
             'name' => 'Special "Quotes" & Symbols',
-            'shortcode' => 'SPECIAL1'
+            'shortcode' => 'SPECIAL1',
         ]);
 
         $snippet = $list->getEmbedFormSnippet();
@@ -147,7 +147,7 @@ describe('NewsletterList Model', function () {
     test('shortcode generation handles collisions', function () {
         // Create list with specific shortcode to test collision avoidance
         $existingList = NewsletterList::factory()->create([
-            'shortcode' => 'TESTCODE'
+            'shortcode' => 'TESTCODE',
         ]);
 
         // Create new list - should get different shortcode
@@ -162,7 +162,7 @@ describe('NewsletterList Model', function () {
             'name' => 'My Newsletter',
             'description' => 'A great newsletter',
             'from_email' => 'newsletter@example.com',
-            'from_name' => 'Newsletter Team'
+            'from_name' => 'Newsletter Team',
         ]);
 
         expect($list->name)->toBe('My Newsletter')
@@ -177,7 +177,7 @@ describe('NewsletterList Model', function () {
             'name' => 'Simple Newsletter',
             'from_email' => 'simple@example.com',
             'from_name' => 'Simple Team',
-            'description' => null
+            'description' => null,
         ]);
 
         expect($list->description)->toBeNull()
@@ -191,24 +191,24 @@ describe('NewsletterList Model', function () {
         $subscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'email' => 'subscribed@example.com'
+            'email' => 'subscribed@example.com',
         ]);
         $unsubscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
-            'email' => 'unsubscribed@example.com'
+            'email' => 'unsubscribed@example.com',
         ]);
 
         // Create campaigns with different statuses
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'draft',
-            'subject' => 'Draft Campaign'
+            'subject' => 'Draft Campaign',
         ]);
         $sentCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'sent',
-            'subject' => 'Sent Campaign'
+            'subject' => 'Sent Campaign',
         ]);
 
         $list->refresh();
@@ -225,7 +225,7 @@ describe('NewsletterList Model', function () {
 
     test('embed form includes proper URLs', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'URL12345'
+            'shortcode' => 'URL12345',
         ]);
 
         $snippet = $list->getEmbedFormSnippet();
@@ -240,7 +240,7 @@ describe('NewsletterList Model', function () {
         $longName = 'This is a very long newsletter name that might cause issues with form generation and display but should be handled gracefully';
 
         $list = NewsletterList::factory()->create([
-            'name' => $longName
+            'name' => $longName,
         ]);
 
         $snippet = $list->getEmbedFormSnippet();
@@ -269,7 +269,7 @@ describe('NewsletterList Model', function () {
         $list = NewsletterList::factory()->create();
 
         // Check shortcode format
-        expect(strlen($list->shortcode))->toBe(8)
+        expect(mb_strlen($list->shortcode))->toBe(8)
             ->and($list->shortcode)->toMatch('/^[a-zA-Z0-9]+$/');
         // Only alphanumeric characters
     });
@@ -279,7 +279,7 @@ describe('NewsletterList Model', function () {
             'name' => 'No Description Newsletter',
             'from_email' => 'nodesc@example.com',
             'from_name' => 'No Desc Team',
-            'description' => ''
+            'description' => '',
         ]);
 
         expect($list->description)->toBe('')

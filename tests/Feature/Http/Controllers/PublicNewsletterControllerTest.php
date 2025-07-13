@@ -6,10 +6,10 @@ use App\Models\NewsletterSubscriber;
 describe('public newsletter subscription', function () {
     test('subscribes user to newsletter list via shortcode', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'test@example.com',
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -31,10 +31,10 @@ describe('public newsletter subscription', function () {
 
     test('subscribes user with only email address', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'test@example.com',
         ]);
 
@@ -54,10 +54,10 @@ describe('public newsletter subscription', function () {
 
     test('validates required email field', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", []);
+        $response = $this->postJson('/newsletter/TEST123/subscribe', []);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
@@ -67,10 +67,10 @@ describe('public newsletter subscription', function () {
 
     test('validates email format', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'invalid-email',
         ]);
 
@@ -82,7 +82,7 @@ describe('public newsletter subscription', function () {
 
     test('validates email uniqueness within the same list', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
         NewsletterSubscriber::factory()->create([
@@ -90,7 +90,7 @@ describe('public newsletter subscription', function () {
             'email' => 'existing@example.com',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'existing@example.com',
         ]);
 
@@ -109,7 +109,7 @@ describe('public newsletter subscription', function () {
             'email' => 'test@example.com',
         ]);
 
-        $response = $this->postJson("/newsletter/LIST2/subscribe", [
+        $response = $this->postJson('/newsletter/LIST2/subscribe', [
             'email' => 'test@example.com',
         ]);
 
@@ -124,10 +124,10 @@ describe('public newsletter subscription', function () {
 
     test('validates field lengths', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => str_repeat('a', 250) . '@example.com',
             'first_name' => str_repeat('b', 256),
             'last_name' => str_repeat('c', 256),
@@ -139,10 +139,10 @@ describe('public newsletter subscription', function () {
 
     test('generates verification and unsubscribe tokens', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'test@example.com',
         ]);
 
@@ -151,12 +151,12 @@ describe('public newsletter subscription', function () {
         $subscriber = NewsletterSubscriber::where('email', 'test@example.com')->first();
         expect($subscriber->verification_token)->not->toBeNull();
         expect($subscriber->unsubscribe_token)->not->toBeNull();
-        expect(strlen($subscriber->verification_token))->toBe(60);
-        expect(strlen($subscriber->unsubscribe_token))->toBe(60);
+        expect(mb_strlen($subscriber->verification_token))->toBe(60);
+        expect(mb_strlen($subscriber->unsubscribe_token))->toBe(60);
     });
 
     test('returns 404 for non-existent newsletter list shortcode', function () {
-        $response = $this->postJson("/newsletter/NONEXISTENT/subscribe", [
+        $response = $this->postJson('/newsletter/NONEXISTENT/subscribe', [
             'email' => 'test@example.com',
         ]);
 
@@ -165,10 +165,10 @@ describe('public newsletter subscription', function () {
 
     test('handles special characters in names', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'test@example.com',
             'first_name' => 'José María',
             'last_name' => 'García-López',
@@ -185,7 +185,7 @@ describe('public newsletter subscription', function () {
 
     test('handles case-insensitive email validation', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
         NewsletterSubscriber::factory()->create([
@@ -193,7 +193,7 @@ describe('public newsletter subscription', function () {
             'email' => 'test@example.com',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'TEST@EXAMPLE.COM',
         ]);
 
@@ -213,10 +213,10 @@ describe('public newsletter subscription', function () {
         $this->assertGuest();
 
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->postJson("/newsletter/TEST123/subscribe", [
+        $response = $this->postJson('/newsletter/TEST123/subscribe', [
             'email' => 'test@example.com',
         ]);
 
@@ -232,7 +232,7 @@ describe('public newsletter signup page', function () {
             'description' => 'A test newsletter description',
         ]);
 
-        $response = $this->get("/newsletter/TEST123");
+        $response = $this->get('/newsletter/TEST123');
 
         $response->assertOk()
             ->assertViewIs('public.newsletter.signup')
@@ -244,7 +244,7 @@ describe('public newsletter signup page', function () {
     });
 
     test('returns 404 for non-existent newsletter list shortcode', function () {
-        $response = $this->get("/newsletter/NONEXISTENT");
+        $response = $this->get('/newsletter/NONEXISTENT');
 
         $response->assertNotFound();
     });
@@ -258,10 +258,10 @@ describe('public newsletter signup page', function () {
             'from_email' => 'team@newsletter.com',
         ]);
 
-        $response = $this->get("/newsletter/SPECIAL");
+        $response = $this->get('/newsletter/SPECIAL');
 
         $response->assertOk()
-            ->assertViewHas('list', function ($viewList) use ($list) {
+            ->assertViewHas('list', function ($viewList) {
                 return $viewList->name === 'Special Newsletter' &&
                        $viewList->description === 'A very special newsletter' &&
                        $viewList->from_name === 'Newsletter Team' &&
@@ -271,10 +271,10 @@ describe('public newsletter signup page', function () {
 
     test('handles shortcodes with special characters', function () {
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'ABC-123_XYZ'
+            'shortcode' => 'ABC-123_XYZ',
         ]);
 
-        $response = $this->get("/newsletter/ABC-123_XYZ");
+        $response = $this->get('/newsletter/ABC-123_XYZ');
 
         $response->assertOk()
             ->assertViewHas('list', function ($viewList) use ($list) {
@@ -286,10 +286,10 @@ describe('public newsletter signup page', function () {
         $this->assertGuest();
 
         $list = NewsletterList::factory()->create([
-            'shortcode' => 'TEST123'
+            'shortcode' => 'TEST123',
         ]);
 
-        $response = $this->get("/newsletter/TEST123");
+        $response = $this->get('/newsletter/TEST123');
 
         $response->assertOk();
     });
@@ -303,7 +303,7 @@ describe('public newsletter signup page', function () {
             'from_email' => 'sender@example.com',
         ]);
 
-        $response = $this->get("/newsletter/FULL-TEST");
+        $response = $this->get('/newsletter/FULL-TEST');
 
         $response->assertOk()
             ->assertViewHas('list')

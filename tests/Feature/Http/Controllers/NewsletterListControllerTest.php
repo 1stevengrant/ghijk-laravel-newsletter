@@ -14,7 +14,7 @@ describe('index', function () {
     test('displays newsletter lists with subscriber counts', function () {
         $list1 = NewsletterList::factory()->create();
         $list2 = NewsletterList::factory()->create();
-        
+
         NewsletterSubscriber::factory()->count(3)->create(['newsletter_list_id' => $list1->id]);
         NewsletterSubscriber::factory()->count(5)->create(['newsletter_list_id' => $list2->id]);
 
@@ -39,7 +39,7 @@ describe('index', function () {
 
     test('redirects guests to login', function () {
         auth()->logout();
-        
+
         $response = $this->get(route('lists.index'));
 
         $response->assertRedirect(route('login'));
@@ -119,7 +119,7 @@ describe('show', function () {
     test('displays newsletter list with subscribers', function () {
         $list = NewsletterList::factory()->create();
         $subscribers = NewsletterSubscriber::factory()->count(3)->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('lists.show', $list));
@@ -138,12 +138,12 @@ describe('show', function () {
 
     test('orders subscribers by subscription date descending', function () {
         $list = NewsletterList::factory()->create();
-        
+
         $oldSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'subscribed_at' => now()->subDays(2),
         ]);
-        
+
         $newSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'subscribed_at' => now(),
@@ -174,7 +174,7 @@ describe('show', function () {
 describe('update', function () {
     test('updates newsletter list with valid data', function () {
         $list = NewsletterList::factory()->create();
-        
+
         $updateData = [
             'name' => 'Updated Newsletter',
             'description' => 'Updated description',
@@ -229,7 +229,7 @@ describe('destroy', function () {
     test('deletes associated subscribers when list is deleted', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->delete(route('lists.destroy', $list));

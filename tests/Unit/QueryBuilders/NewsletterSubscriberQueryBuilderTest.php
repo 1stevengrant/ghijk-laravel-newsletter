@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\NewsletterSubscriber;
 use App\Models\NewsletterList;
+use App\Models\NewsletterSubscriber;
 use App\QueryBuilders\NewsletterSubscriberQueryBuilder;
 
 describe('NewsletterSubscriberQueryBuilder', function () {
@@ -12,12 +12,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $subscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $unsubscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $results = NewsletterSubscriber::query()->whereSubscribed()->get();
@@ -32,12 +32,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $subscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $unsubscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $results = NewsletterSubscriber::query()->whereUnsubscribed()->get();
@@ -47,18 +47,17 @@ describe('NewsletterSubscriberQueryBuilder', function () {
             ->and($results->first()->status)->toBe('unsubscribed');
     });
 
-
     test('whereStatus filters subscribers by any status', function () {
         $list = NewsletterList::factory()->create();
 
         $subscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $unsubscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $subscribedResults = NewsletterSubscriber::query()->whereStatus('subscribed')->get();
@@ -75,12 +74,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $verifiedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
 
         $unverifiedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'email_verified_at' => null
+            'email_verified_at' => null,
         ]);
 
         $results = NewsletterSubscriber::query()->whereVerified()->get();
@@ -95,12 +94,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $verifiedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
 
         $unverifiedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'email_verified_at' => null
+            'email_verified_at' => null,
         ]);
 
         $results = NewsletterSubscriber::query()->whereUnverified()->get();
@@ -116,12 +115,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $targetUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'email' => $targetEmail
+            'email' => $targetEmail,
         ]);
 
         $otherUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'email' => 'other@example.com'
+            'email' => 'other@example.com',
         ]);
 
         $results = NewsletterSubscriber::query()->whereEmail($targetEmail)->get();
@@ -136,11 +135,11 @@ describe('NewsletterSubscriberQueryBuilder', function () {
         $list2 = NewsletterList::factory()->create();
 
         $list1Subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list1->id
+            'newsletter_list_id' => $list1->id,
         ]);
 
         $list2Subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list2->id
+            'newsletter_list_id' => $list2->id,
         ]);
 
         $results = NewsletterSubscriber::query()->whereNewsletterList($list1->id)->get();
@@ -156,12 +155,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
         // Create subscribers with different statuses
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         NewsletterSubscriber::factory()->count(2)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $counts = NewsletterSubscriber::query()->countByStatus();
@@ -177,12 +176,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $recentSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => now()->subDays(2)
+            'subscribed_at' => now()->subDays(2),
         ]);
 
         $oldSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => now()->subDays(10)
+            'subscribed_at' => now()->subDays(10),
         ]);
 
         $results = NewsletterSubscriber::query()->subscribedAfter($cutoffDate)->get();
@@ -197,12 +196,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $recentSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => now()->subDays(2)
+            'subscribed_at' => now()->subDays(2),
         ]);
 
         $oldSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => now()->subDays(10)
+            'subscribed_at' => now()->subDays(10),
         ]);
 
         $results = NewsletterSubscriber::query()->subscribedBefore($cutoffDate)->get();
@@ -218,13 +217,13 @@ describe('NewsletterSubscriberQueryBuilder', function () {
         $recentUnsubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
-            'unsubscribed_at' => now()->subDays(2)
+            'unsubscribed_at' => now()->subDays(2),
         ]);
 
         $oldUnsubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
-            'unsubscribed_at' => now()->subDays(10)
+            'unsubscribed_at' => now()->subDays(10),
         ]);
 
         $results = NewsletterSubscriber::query()->unsubscribedAfter($cutoffDate)->get();
@@ -240,13 +239,13 @@ describe('NewsletterSubscriberQueryBuilder', function () {
         $recentUnsubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
-            'unsubscribed_at' => now()->subDays(2)
+            'unsubscribed_at' => now()->subDays(2),
         ]);
 
         $oldUnsubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
-            'unsubscribed_at' => now()->subDays(10)
+            'unsubscribed_at' => now()->subDays(10),
         ]);
 
         $results = NewsletterSubscriber::query()->unsubscribedBefore($cutoffDate)->get();
@@ -260,12 +259,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $oldSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()->subDays(2)
+            'created_at' => now()->subDays(2),
         ]);
 
         $newSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $results = NewsletterSubscriber::query()->orderByLatest()->get();
@@ -279,12 +278,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $oldSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()->subDays(2)
+            'created_at' => now()->subDays(2),
         ]);
 
         $newSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $results = NewsletterSubscriber::query()->orderByOldest()->get();
@@ -298,12 +297,12 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $oldSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => now()->subDays(2)
+            'subscribed_at' => now()->subDays(2),
         ]);
 
         $newSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => now()
+            'subscribed_at' => now(),
         ]);
 
         $results = NewsletterSubscriber::query()->orderBySubscribedAt()->get();
@@ -319,21 +318,21 @@ describe('NewsletterSubscriberQueryBuilder', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => 'John',
             'last_name' => 'Doe',
-            'email' => 'john.doe@example.com'
+            'email' => 'john.doe@example.com',
         ]);
 
         $janeSmith = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'first_name' => 'Jane',
             'last_name' => 'Smith',
-            'email' => 'jane.smith@example.com'
+            'email' => 'jane.smith@example.com',
         ]);
 
         $bobJohnson = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'first_name' => 'Bob',
             'last_name' => 'Johnson',
-            'email' => 'bob@company.com'
+            'email' => 'bob@company.com',
         ]);
 
         // Search by first name
@@ -363,14 +362,14 @@ describe('NewsletterSubscriberQueryBuilder', function () {
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
             'first_name' => 'John',
-            'created_at' => now()->subDay()
+            'created_at' => now()->subDay(),
         ]);
 
         $unsubscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
             'first_name' => 'John',
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $results = NewsletterSubscriber::query()
@@ -410,7 +409,7 @@ describe('NewsletterSubscriberQueryBuilder', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => 'Jonathan',
             'last_name' => 'Doe',
-            'email' => 'jonathan@example.com'
+            'email' => 'jonathan@example.com',
         ]);
 
         // Partial matches should work
@@ -429,7 +428,7 @@ describe('NewsletterSubscriberQueryBuilder', function () {
 
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => $exactDate
+            'subscribed_at' => $exactDate,
         ]);
 
         $afterResults = NewsletterSubscriber::query()->subscribedAfter($exactDate)->get();
@@ -450,7 +449,7 @@ describe('NewsletterSubscriberQueryBuilder', function () {
             'first_name' => 'John',
             'email' => 'john@example.com',
             'email_verified_at' => now(),
-            'subscribed_at' => now()->subDays(1)
+            'subscribed_at' => now()->subDays(1),
         ]);
 
         // Create noise data
@@ -458,14 +457,14 @@ describe('NewsletterSubscriberQueryBuilder', function () {
             'newsletter_list_id' => $list2->id, // Different list
             'status' => 'subscribed',
             'first_name' => 'John',
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list1->id,
             'status' => 'unsubscribed', // Different status
             'first_name' => 'John',
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
 
         $results = NewsletterSubscriber::query()

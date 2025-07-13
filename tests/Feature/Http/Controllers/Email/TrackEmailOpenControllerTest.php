@@ -2,23 +2,23 @@
 
 use App\Models\Campaign;
 use App\Models\NewsletterList;
-use App\Models\NewsletterSubscriber;
 use Illuminate\Support\Facades\DB;
+use App\Models\NewsletterSubscriber;
 
 describe('track email open', function () {
     test('tracks first email open and increments campaign opens count', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 5
+            'opens' => 5,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk()
@@ -42,16 +42,16 @@ describe('track email open', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 10
+            'opens' => 10,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // First open
         $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $campaign->refresh();
@@ -60,7 +60,7 @@ describe('track email open', function () {
         // Second open from same subscriber
         $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $campaign->refresh();
@@ -79,25 +79,25 @@ describe('track email open', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 0
+            'opens' => 0,
         ]);
         $subscriber1 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber2 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // First subscriber opens
         $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber1
+            'subscriber' => $subscriber1,
         ]));
 
         // Second subscriber opens
         $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber2
+            'subscriber' => $subscriber2,
         ]));
 
         $campaign->refresh();
@@ -114,17 +114,17 @@ describe('track email open', function () {
     test('records IP address and user agent', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->withHeaders([
             'User-Agent' => 'Mozilla/5.0 (Test Browser)',
         ])->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk();
@@ -140,17 +140,17 @@ describe('track email open', function () {
     test('records timestamp correctly', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $beforeTime = now();
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $afterTime = now();
@@ -169,15 +169,15 @@ describe('track email open', function () {
     test('returns transparent pixel image', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk();
@@ -193,15 +193,15 @@ describe('track email open', function () {
     test('sets proper cache headers to prevent caching', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk()
@@ -213,12 +213,12 @@ describe('track email open', function () {
     test('returns 404 for non-existent campaign', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => 999,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertNotFound();
@@ -227,12 +227,12 @@ describe('track email open', function () {
     test('returns 404 for non-existent subscriber', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => 999
+            'subscriber' => 999,
         ]));
 
         $response->assertNotFound();
@@ -244,15 +244,15 @@ describe('track email open', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 0
+            'opens' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk();
@@ -261,16 +261,16 @@ describe('track email open', function () {
     test('handles missing user agent gracefully', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // Clear headers to simulate missing User-Agent
         $response = $this->withHeaders([])->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk();
@@ -285,21 +285,21 @@ describe('track email open', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 0
+            'opens' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // Simulate concurrent requests (in real scenario these would be parallel)
         $response1 = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response2 = $this->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response1->assertOk();
@@ -321,26 +321,26 @@ describe('track email open', function () {
         $list = NewsletterList::factory()->create();
         $campaign1 = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 0
+            'opens' => 0,
         ]);
         $campaign2 = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'opens' => 0
+            'opens' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // Open first campaign
         $this->get(route('campaign.track.open', [
             'campaign' => $campaign1,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         // Open second campaign
         $this->get(route('campaign.track.open', [
             'campaign' => $campaign2,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $campaign1->refresh();
@@ -360,10 +360,10 @@ describe('track email open', function () {
     test('handles special characters in user agent', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $specialUserAgent = 'Mozilla/5.0 (特殊字符) WebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36';
@@ -372,7 +372,7 @@ describe('track email open', function () {
             'User-Agent' => $specialUserAgent,
         ])->get(route('campaign.track.open', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk();

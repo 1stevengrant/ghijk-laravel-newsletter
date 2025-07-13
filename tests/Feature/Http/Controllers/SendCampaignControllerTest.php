@@ -2,12 +2,12 @@
 
 use App\Models\User;
 use App\Models\Campaign;
+use App\Jobs\SendCampaignJob;
 use App\Models\NewsletterList;
 use App\Models\NewsletterSubscriber;
-use App\Jobs\SendCampaignJob;
 use App\Events\CampaignStatusChanged;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -26,7 +26,7 @@ describe('send campaign', function () {
 
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -75,7 +75,7 @@ describe('send campaign', function () {
         // Create unsubscribed subscribers only
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -112,11 +112,11 @@ describe('send campaign', function () {
         // Mix of subscribed and unsubscribed
         NewsletterSubscriber::factory()->count(2)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
         NewsletterSubscriber::factory()->count(5)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -135,7 +135,7 @@ describe('send campaign', function () {
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -155,9 +155,9 @@ describe('send campaign', function () {
 
     test('requires authentication', function () {
         auth()->logout();
-        
+
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $this->list->id
+            'newsletter_list_id' => $this->list->id,
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -173,7 +173,7 @@ describe('send campaign', function () {
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -193,7 +193,7 @@ describe('send campaign', function () {
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));
@@ -212,7 +212,7 @@ describe('send campaign', function () {
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->post(route('campaigns.send', $campaign));

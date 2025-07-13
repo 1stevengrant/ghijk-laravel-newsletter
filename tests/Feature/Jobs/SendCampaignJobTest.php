@@ -1,13 +1,13 @@
 <?php
 
-use App\Jobs\SendCampaignJob;
 use App\Models\Campaign;
+use App\Mail\CampaignEmail;
+use App\Jobs\SendCampaignJob;
 use App\Models\NewsletterList;
 use App\Models\NewsletterSubscriber;
-use App\Mail\CampaignEmail;
+use Illuminate\Support\Facades\Mail;
 use App\Events\CampaignStatusChanged;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 
 describe('SendCampaignJob', function () {
@@ -21,21 +21,21 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         // Create subscribers
         $subscriber1 = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
         $subscriber2 = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
         $subscriber3 = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed' // Should not receive email
+            'status' => 'unsubscribed', // Should not receive email
         ]);
 
         $job = new SendCampaignJob($campaign);
@@ -69,7 +69,7 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         $job = new SendCampaignJob($campaign);
@@ -90,18 +90,18 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         $subscriber1 = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'email' => 'valid@example.com'
+            'email' => 'valid@example.com',
         ]);
         $subscriber2 = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'email' => 'bounce@example.com'
+            'email' => 'bounce@example.com',
         ]);
 
         // Mock Mail to throw exception for specific email
@@ -125,17 +125,17 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         // Create subscribers with different statuses
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $job = new SendCampaignJob($campaign);
@@ -151,12 +151,12 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $job = new SendCampaignJob($campaign);
@@ -173,7 +173,7 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         // No subscribers created
@@ -196,7 +196,7 @@ describe('SendCampaignJob', function () {
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SENDING,
             'subject' => 'Test Campaign Subject',
-            'content' => 'Test campaign content'
+            'content' => 'Test campaign content',
         ]);
 
         $subscriber = NewsletterSubscriber::factory()->create([
@@ -204,7 +204,7 @@ describe('SendCampaignJob', function () {
             'status' => 'subscribed',
             'email' => 'test@example.com',
             'first_name' => 'John',
-            'last_name' => 'Doe'
+            'last_name' => 'Doe',
         ]);
 
         $job = new SendCampaignJob($campaign);
@@ -222,12 +222,12 @@ describe('SendCampaignJob', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SENDING,
-            'sent_at' => null
+            'sent_at' => null,
         ]);
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $beforeTime = now();
@@ -247,7 +247,7 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         // Create 50 subscribers
@@ -255,7 +255,7 @@ describe('SendCampaignJob', function () {
             NewsletterSubscriber::factory()->create([
                 'newsletter_list_id' => $list->id,
                 'status' => 'subscribed',
-                'email' => "user{$i}@example.com"
+                'email' => "user{$i}@example.com",
             ]);
         }
 
@@ -276,12 +276,12 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         // Set delay config
@@ -306,18 +306,18 @@ describe('SendCampaignJob', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         $successSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'email' => 'success@example.com'
+            'email' => 'success@example.com',
         ]);
         $bounceSubscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'email' => 'bounce@example.com'
+            'email' => 'bounce@example.com',
         ]);
 
         // Mock specific email behaviors
@@ -340,7 +340,7 @@ describe('SendCampaignJob', function () {
     test('job has correct timeout setting', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $job = new SendCampaignJob($campaign);

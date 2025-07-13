@@ -1,13 +1,13 @@
 <?php
 
+use Mockery;
 use App\Models\User;
 use App\Services\UnsplashService;
-use Mockery;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
     $this->actingAs($this->user);
-    
+
     // Mock the UnsplashService
     $this->unsplashService = Mockery::mock(UnsplashService::class);
     $this->app->instance(UnsplashService::class, $this->unsplashService);
@@ -75,7 +75,7 @@ describe('search photos', function () {
 
     test('validates query maximum length', function () {
         $longQuery = str_repeat('a', 256);
-        
+
         $response = $this->getJson(route('unsplash.search') . '?query=' . $longQuery);
 
         $response->assertStatus(422)
@@ -160,7 +160,7 @@ describe('download photo', function () {
             ->andReturn($expectedResult);
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => 'photo123'
+            'photo_id' => 'photo123',
         ]);
 
         $response->assertOk()
@@ -183,7 +183,7 @@ describe('download photo', function () {
             ->andReturn($expectedResult);
 
         $response = $this->postJson(route('campaigns.unsplash.download', $campaignId), [
-            'photo_id' => 'photo123'
+            'photo_id' => 'photo123',
         ]);
 
         $response->assertOk()
@@ -199,7 +199,7 @@ describe('download photo', function () {
 
     test('validates photo_id is string', function () {
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => 123
+            'photo_id' => 123,
         ]);
 
         $response->assertStatus(422)
@@ -214,12 +214,12 @@ describe('download photo', function () {
             ->andReturn(null);
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => 'invalid_photo'
+            'photo_id' => 'invalid_photo',
         ]);
 
         $response->assertStatus(500)
             ->assertJsonFragment([
-                'error' => 'Failed to download and save image'
+                'error' => 'Failed to download and save image',
             ]);
     });
 
@@ -231,12 +231,12 @@ describe('download photo', function () {
             ->andReturn(null);
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => 'photo123'
+            'photo_id' => 'photo123',
         ]);
 
         $response->assertStatus(500)
             ->assertJsonFragment([
-                'error' => 'Failed to download and save image'
+                'error' => 'Failed to download and save image',
             ]);
     });
 
@@ -250,7 +250,7 @@ describe('download photo', function () {
             ->andReturn(['success' => true]);
 
         $response = $this->postJson(route('campaigns.unsplash.download', $campaignId), [
-            'photo_id' => 'photo123'
+            'photo_id' => 'photo123',
         ]);
 
         $response->assertOk();
@@ -258,7 +258,7 @@ describe('download photo', function () {
 
     test('handles empty string photo_id', function () {
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => ''
+            'photo_id' => '',
         ]);
 
         $response->assertStatus(422)
@@ -267,7 +267,7 @@ describe('download photo', function () {
 
     test('handles long photo_id', function () {
         $longPhotoId = str_repeat('a', 1000);
-        
+
         $this->unsplashService
             ->shouldReceive('downloadAndSavePhoto')
             ->with($longPhotoId, null)
@@ -275,7 +275,7 @@ describe('download photo', function () {
             ->andReturn(['success' => true]);
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => $longPhotoId
+            'photo_id' => $longPhotoId,
         ]);
 
         $response->assertOk();
@@ -285,7 +285,7 @@ describe('download photo', function () {
         auth()->logout();
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => 'photo123'
+            'photo_id' => 'photo123',
         ]);
 
         $response->assertUnauthorized();
@@ -293,7 +293,7 @@ describe('download photo', function () {
 
     test('handles special characters in photo_id', function () {
         $photoId = 'photo-123_test.special';
-        
+
         $this->unsplashService
             ->shouldReceive('downloadAndSavePhoto')
             ->with($photoId, null)
@@ -301,7 +301,7 @@ describe('download photo', function () {
             ->andReturn(['success' => true]);
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => $photoId
+            'photo_id' => $photoId,
         ]);
 
         $response->assertOk();
@@ -325,7 +325,7 @@ describe('download photo', function () {
             ->andReturn($serviceResponse);
 
         $response = $this->postJson(route('unsplash.download'), [
-            'photo_id' => 'unsplash_photo_id'
+            'photo_id' => 'unsplash_photo_id',
         ]);
 
         $response->assertOk()

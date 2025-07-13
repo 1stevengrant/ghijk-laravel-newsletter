@@ -1,13 +1,12 @@
 <?php
 
-use App\Jobs\ProcessImportJob;
 use App\Models\Import;
+use App\Jobs\ProcessImportJob;
 use App\Models\NewsletterList;
-use App\Models\NewsletterSubscriber;
 use App\Events\ImportCompleted;
+use App\Models\NewsletterSubscriber;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Queue;
 
 describe('ProcessImportJob', function () {
     beforeEach(function () {
@@ -21,7 +20,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'test-import.csv',
             'original_filename' => 'test-import.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         // Create test CSV content
@@ -52,7 +51,7 @@ describe('ProcessImportJob', function () {
             'first_name' => 'John',
             'last_name' => 'Doe',
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         // Check successful rows last since this is what's failing
@@ -67,7 +66,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'bom-test.csv',
             'original_filename' => 'bom-test.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         // Create CSV with BOM
@@ -86,7 +85,7 @@ describe('ProcessImportJob', function () {
 
         $this->assertDatabaseHas('newsletter_subscribers', [
             'email' => 'test@example.com',
-            'first_name' => 'Test'
+            'first_name' => 'Test',
         ]);
     });
 
@@ -96,7 +95,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'variations.csv',
             'original_filename' => 'variations.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "Email,First Name,Last Name\n";
@@ -115,7 +114,7 @@ describe('ProcessImportJob', function () {
         $this->assertDatabaseHas('newsletter_subscribers', [
             'email' => 'user1@example.com',
             'first_name' => 'User',
-            'last_name' => 'One'
+            'last_name' => 'One',
         ]);
     });
 
@@ -125,7 +124,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'alternate.csv',
             'original_filename' => 'alternate.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email,firstname,lastname\n";
@@ -143,7 +142,7 @@ describe('ProcessImportJob', function () {
         $this->assertDatabaseHas('newsletter_subscribers', [
             'email' => 'alt@example.com',
             'first_name' => 'Alt',
-            'last_name' => 'User'
+            'last_name' => 'User',
         ]);
     });
 
@@ -153,7 +152,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'invalid-emails.csv',
             'original_filename' => 'invalid-emails.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email,first_name\n";
@@ -183,7 +182,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'mismatch.csv',
             'original_filename' => 'mismatch.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email,first_name,last_name\n";
@@ -200,7 +199,7 @@ describe('ProcessImportJob', function () {
 
         expect($import->successful_rows)->toBe(2)
             ->and($import->failed_rows)->toBe(1)
-            ->and($import->errors)->toContain("Row 2: Column count mismatch");
+            ->and($import->errors)->toContain('Row 2: Column count mismatch');
     });
 
     test('prevents duplicate subscribers in same list', function () {
@@ -210,14 +209,14 @@ describe('ProcessImportJob', function () {
         NewsletterSubscriber::factory()->create([
             'email' => 'existing@example.com',
             'newsletter_list_id' => $list->id,
-            'first_name' => 'Existing'
+            'first_name' => 'Existing',
         ]);
 
         $import = Import::create([
             'newsletter_list_id' => $list->id,
             'filename' => 'duplicates.csv',
             'original_filename' => 'duplicates.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email,first_name\n";
@@ -246,11 +245,11 @@ describe('ProcessImportJob', function () {
                 'name' => 'New List from Import',
                 'description' => 'Created during import',
                 'from_email' => 'test@example.com',
-                'from_name' => 'Test Sender'
+                'from_name' => 'Test Sender',
             ],
             'filename' => 'new-list.csv',
             'original_filename' => 'new-list.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email,first_name\n";
@@ -267,7 +266,7 @@ describe('ProcessImportJob', function () {
 
         $this->assertDatabaseHas('newsletter_lists', [
             'name' => 'New List from Import',
-            'description' => 'Created during import'
+            'description' => 'Created during import',
         ]);
 
         $newList = NewsletterList::where('name', 'New List from Import')->first();
@@ -278,7 +277,7 @@ describe('ProcessImportJob', function () {
         $import = Import::create([
             'filename' => 'nonexistent.csv',
             'original_filename' => 'nonexistent.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $job = new ProcessImportJob($import);
@@ -301,7 +300,7 @@ describe('ProcessImportJob', function () {
             'new_list_data' => null,
             'filename' => 'no-list.csv',
             'original_filename' => 'no-list.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email\ntest@example.com\n";
@@ -324,7 +323,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'no-header.csv',
             'original_filename' => 'no-header.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         // Empty file
@@ -344,7 +343,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'progress.csv',
             'original_filename' => 'progress.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         // Create CSV with 150 rows to trigger progress updates
@@ -371,7 +370,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'many-errors.csv',
             'original_filename' => 'many-errors.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         // Create CSV with many invalid emails
@@ -398,7 +397,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'cleanup.csv',
             'original_filename' => 'cleanup.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email,first_name\ntest@example.com,Test\n";
@@ -418,7 +417,7 @@ describe('ProcessImportJob', function () {
             'new_list_data' => null,
             'filename' => 'cleanup-fail.csv',
             'original_filename' => 'cleanup-fail.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $csvContent = "email\ntest@example.com\n";
@@ -443,7 +442,7 @@ describe('ProcessImportJob', function () {
             'newsletter_list_id' => $list->id,
             'filename' => 'unreadable.csv',
             'original_filename' => 'unreadable.csv',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         // Create the file but we'll mock the fopen failure

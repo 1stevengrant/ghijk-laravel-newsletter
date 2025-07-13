@@ -9,10 +9,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 5
+            'clicks' => 5,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $targetUrl = 'https://example.com/target-page';
@@ -20,7 +20,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $targetUrl
+            'url' => $targetUrl,
         ]));
 
         $response->assertRedirect($targetUrl);
@@ -33,15 +33,15 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
-            'subscriber' => $subscriber
+            'subscriber' => $subscriber,
         ]));
 
         $response->assertOk()
@@ -55,10 +55,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 2
+            'clicks' => 2,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // Test with invalid URL
@@ -67,7 +67,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $invalidUrl
+            'url' => $invalidUrl,
         ]));
 
         $response->assertOk()
@@ -81,10 +81,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // Test with javascript URL (potential XSS)
@@ -93,7 +93,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $maliciousUrl
+            'url' => $maliciousUrl,
         ]));
 
         $response->assertOk()
@@ -107,10 +107,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // Test with data URL
@@ -119,7 +119,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $dataUrl
+            'url' => $dataUrl,
         ]));
 
         $response->assertOk()
@@ -133,10 +133,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 10
+            'clicks' => 10,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $httpsUrl = 'https://secure.example.com/page';
@@ -144,7 +144,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $httpsUrl
+            'url' => $httpsUrl,
         ]));
 
         $response->assertRedirect($httpsUrl);
@@ -157,10 +157,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 7
+            'clicks' => 7,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $httpUrl = 'http://example.com/page';
@@ -168,7 +168,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $httpUrl
+            'url' => $httpUrl,
         ]));
 
         $response->assertRedirect($httpUrl);
@@ -181,10 +181,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $complexUrl = 'https://example.com/page?param1=value1&param2=value2#section';
@@ -192,7 +192,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $complexUrl
+            'url' => $complexUrl,
         ]));
 
         $response->assertRedirect($complexUrl);
@@ -202,10 +202,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $specialUrl = 'https://example.com/special-page?search=test';
@@ -213,7 +213,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $specialUrl
+            'url' => $specialUrl,
         ]));
 
         // The URL should be redirected to
@@ -223,13 +223,13 @@ describe('track email click', function () {
     test('returns 404 for non-existent campaign', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.click', [
             'campaign' => 999,
             'subscriber' => $subscriber,
-            'url' => 'https://example.com'
+            'url' => 'https://example.com',
         ]));
 
         $response->assertNotFound();
@@ -238,13 +238,13 @@ describe('track email click', function () {
     test('returns 404 for non-existent subscriber', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => 999,
-            'url' => 'https://example.com'
+            'url' => 'https://example.com',
         ]));
 
         $response->assertNotFound();
@@ -256,16 +256,16 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => 'https://example.com'
+            'url' => 'https://example.com',
         ]));
 
         $response->assertRedirect('https://example.com');
@@ -275,16 +275,16 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 5
+            'clicks' => 5,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => ''
+            'url' => '',
         ]));
 
         $response->assertOk()
@@ -298,24 +298,24 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         // First click
         $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => 'https://example.com/page1'
+            'url' => 'https://example.com/page1',
         ]));
 
         // Second click
         $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => 'https://example.com/page2'
+            'url' => 'https://example.com/page2',
         ]));
 
         $campaign->refresh();
@@ -326,10 +326,10 @@ describe('track email click', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'clicks' => 0
+            'clicks' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $longUrl = 'https://example.com/very-long-path/' . str_repeat('segment/', 100) . 'final-page';
@@ -337,7 +337,7 @@ describe('track email click', function () {
         $response = $this->get(route('campaign.track.click', [
             'campaign' => $campaign,
             'subscriber' => $subscriber,
-            'url' => $longUrl
+            'url' => $longUrl,
         ]));
 
         $response->assertRedirect($longUrl);

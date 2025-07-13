@@ -1,20 +1,20 @@
 <?php
 
-use App\Models\NewsletterSubscriber;
 use App\Models\NewsletterList;
+use App\Models\NewsletterSubscriber;
 use App\QueryBuilders\NewsletterSubscriberQueryBuilder;
 
 describe('NewsletterSubscriber Model', function () {
     uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class);
 
     test('has no guarded attributes', function () {
-        expect((new NewsletterSubscriber())->getGuarded())->toBe([]);
+        expect((new NewsletterSubscriber)->getGuarded())->toBe([]);
     });
 
     test('belongs to newsletter list', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         expect($subscriber->newsletterList)->toBeInstanceOf(NewsletterList::class)
@@ -27,7 +27,7 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => null // Should be auto-set
+            'subscribed_at' => null, // Should be auto-set
         ]);
 
         $afterTime = now();
@@ -43,7 +43,7 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'subscribed_at' => $customTime
+            'subscribed_at' => $customTime,
         ]);
 
         expect($subscriber->subscribed_at->eq($customTime))->toBeTrue();
@@ -53,12 +53,12 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'verification_token' => null // Should be auto-generated
+            'verification_token' => null, // Should be auto-generated
         ]);
 
         expect($subscriber->verification_token)->not->toBeNull()
             ->and($subscriber->verification_token)->toBeString()
-            ->and(strlen($subscriber->verification_token))->toBe(36);
+            ->and(mb_strlen($subscriber->verification_token))->toBe(36);
         // UUID length
     });
 
@@ -68,7 +68,7 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'verification_token' => $customToken
+            'verification_token' => $customToken,
         ]);
 
         expect($subscriber->verification_token)->toBe($customToken);
@@ -78,12 +78,12 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'unsubscribe_token' => null // Should be auto-generated
+            'unsubscribe_token' => null, // Should be auto-generated
         ]);
 
         expect($subscriber->unsubscribe_token)->not->toBeNull()
             ->and($subscriber->unsubscribe_token)->toBeString()
-            ->and(strlen($subscriber->unsubscribe_token))->toBe(36);
+            ->and(mb_strlen($subscriber->unsubscribe_token))->toBe(36);
         // UUID length
     });
 
@@ -93,7 +93,7 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'unsubscribe_token' => $customToken
+            'unsubscribe_token' => $customToken,
         ]);
 
         expect($subscriber->unsubscribe_token)->toBe($customToken);
@@ -103,10 +103,10 @@ describe('NewsletterSubscriber Model', function () {
         $list = NewsletterList::factory()->create();
 
         $subscriber1 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
         $subscriber2 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         expect($subscriber1->verification_token)->not->toBe($subscriber2->verification_token)
@@ -119,7 +119,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => 'John',
             'last_name' => 'Doe',
-            'email' => 'john@example.com'
+            'email' => 'john@example.com',
         ]);
 
         expect($subscriber->name)->toBe('John Doe');
@@ -131,7 +131,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => 'John',
             'last_name' => null,
-            'email' => 'john@example.com'
+            'email' => 'john@example.com',
         ]);
 
         expect($subscriber->name)->toBe('John');
@@ -143,7 +143,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => null,
             'last_name' => 'Doe',
-            'email' => 'doe@example.com'
+            'email' => 'doe@example.com',
         ]);
 
         expect($subscriber->name)->toBe('Doe');
@@ -155,7 +155,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => null,
             'last_name' => null,
-            'email' => 'unknown@example.com'
+            'email' => 'unknown@example.com',
         ]);
 
         expect($subscriber->name)->toBe('unknown@example.com');
@@ -167,7 +167,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => '',
             'last_name' => '',
-            'email' => 'empty@example.com'
+            'email' => 'empty@example.com',
         ]);
 
         expect($subscriber->name)->toBe('empty@example.com');
@@ -179,7 +179,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'first_name' => '  John  ',
             'last_name' => '  Doe  ',
-            'email' => 'john@example.com'
+            'email' => 'john@example.com',
         ]);
 
         expect($subscriber->name)->toContain('John')
@@ -197,12 +197,12 @@ describe('NewsletterSubscriber Model', function () {
 
         $subscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $unsubscribedUser = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         expect($subscribedUser->status)->toBe('subscribed')
@@ -214,7 +214,7 @@ describe('NewsletterSubscriber Model', function () {
         $subscriber = NewsletterSubscriber::create([
             'newsletter_list_id' => $list->id,
             'email' => 'minimal@example.com',
-            'subscribed_at' => now()
+            'subscribed_at' => now(),
         ]);
 
         expect($subscriber->email)->toBe('minimal@example.com')
@@ -232,7 +232,7 @@ describe('NewsletterSubscriber Model', function () {
             'first_name' => 'Optional',
             'last_name' => 'User',
             'email_verified_at' => now(),
-            'unsubscribed_at' => null
+            'unsubscribed_at' => null,
         ]);
 
         expect($subscriber->first_name)->toBe('Optional')
@@ -248,7 +248,7 @@ describe('NewsletterSubscriber Model', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed',
-            'unsubscribed_at' => $unsubscribeTime
+            'unsubscribed_at' => $unsubscribeTime,
         ]);
 
         expect($subscriber->unsubscribed_at)->not->toBeNull()
@@ -262,7 +262,7 @@ describe('NewsletterSubscriber Model', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'email_verified_at' => $verificationTime,
-            'verification_token' => 'verified-token'
+            'verification_token' => 'verified-token',
         ]);
 
         expect($subscriber->email_verified_at)->not->toBeNull()
@@ -278,7 +278,7 @@ describe('NewsletterSubscriber Model', function () {
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
             'email_verified_at' => null,
-            'unsubscribed_at' => null
+            'unsubscribed_at' => null,
         ]);
 
         // Verify email
@@ -288,7 +288,7 @@ describe('NewsletterSubscriber Model', function () {
         // Unsubscribe
         $subscriber->update([
             'status' => 'unsubscribed',
-            'unsubscribed_at' => now()
+            'unsubscribed_at' => now(),
         ]);
         expect($subscriber->status)->toBe('unsubscribed')
             ->and($subscriber->unsubscribed_at)->not->toBeNull();
@@ -306,7 +306,7 @@ describe('NewsletterSubscriber Model', function () {
             'verification_token' => 'complete-verification-token',
             'unsubscribe_token' => 'complete-unsubscribe-token',
             'subscribed_at' => now()->subDays(2),
-            'unsubscribed_at' => null
+            'unsubscribed_at' => null,
         ]);
 
         expect($subscriber->email)->toBe('complete@example.com')

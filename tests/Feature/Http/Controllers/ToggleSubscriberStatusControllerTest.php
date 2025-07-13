@@ -91,7 +91,7 @@ describe('toggle subscriber status', function () {
         auth()->logout();
 
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $this->list->id
+            'newsletter_list_id' => $this->list->id,
         ]);
 
         $response = $this->post(route('subscribers.toggle-status', $subscriber));

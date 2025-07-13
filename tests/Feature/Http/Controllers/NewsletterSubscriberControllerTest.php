@@ -77,7 +77,7 @@ describe('store', function () {
 
     test('allows same email in different lists', function () {
         $otherList = NewsletterList::factory()->create();
-        
+
         NewsletterSubscriber::factory()->create([
             'email' => 'test@example.com',
             'newsletter_list_id' => $otherList->id,
@@ -107,9 +107,9 @@ describe('store', function () {
 
     test('redirects guests to login', function () {
         auth()->logout();
-        
+
         $response = $this->post(route('subscribers.store', $this->list), [
-            'email' => 'test@example.com'
+            'email' => 'test@example.com',
         ]);
 
         $response->assertRedirect(route('login'));
@@ -119,7 +119,7 @@ describe('store', function () {
 describe('destroy', function () {
     test('deletes subscriber', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $this->list->id
+            'newsletter_list_id' => $this->list->id,
         ]);
 
         $response = $this->delete(route('subscribers.destroy', [$this->list, $subscriber]));
@@ -138,9 +138,9 @@ describe('destroy', function () {
 
     test('redirects guests to login', function () {
         auth()->logout();
-        
+
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $this->list->id
+            'newsletter_list_id' => $this->list->id,
         ]);
 
         $response = $this->delete(route('subscribers.destroy', [$this->list, $subscriber]));
@@ -151,7 +151,7 @@ describe('destroy', function () {
     test('can delete any subscriber regardless of list in route', function () {
         $otherList = NewsletterList::factory()->create();
         $subscriber = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $otherList->id
+            'newsletter_list_id' => $otherList->id,
         ]);
 
         $response = $this->delete(route('subscribers.destroy', [$this->list, $subscriber]));

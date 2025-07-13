@@ -16,7 +16,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->image('test.jpg', 800, 600);
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertOk()
@@ -28,7 +28,7 @@ describe('store', function () {
                 'id',
                 'path',
                 'url',
-                'full_url'
+                'full_url',
             ]);
 
         $this->assertDatabaseHas('images', [
@@ -47,7 +47,7 @@ describe('store', function () {
         $campaignId = 123;
 
         $response = $this->post(route('campaigns.images.upload', ['campaign' => $campaignId]), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertOk();
@@ -60,7 +60,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->image('test.jpg');
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertOk();
@@ -81,7 +81,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->create('document.pdf', 100);
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertSessionHasErrors(['image']);
@@ -92,7 +92,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->create('large.jpg', 10241);
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertSessionHasErrors(['image']);
@@ -105,7 +105,7 @@ describe('store', function () {
             $file = UploadedFile::fake()->image("test.{$format}");
 
             $response = $this->post(route('images.upload'), [
-                'image' => $file
+                'image' => $file,
             ]);
 
             $response->assertOk();
@@ -118,7 +118,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->image('test.png');
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertOk();
@@ -132,7 +132,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->image('test.jpg', 800, 600);
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertOk();
@@ -148,7 +148,7 @@ describe('store', function () {
         $file = UploadedFile::fake()->image('test.jpg');
 
         $response = $this->post(route('images.upload'), [
-            'image' => $file
+            'image' => $file,
         ]);
 
         $response->assertRedirect(route('login'));
@@ -161,7 +161,7 @@ describe('destroy', function () {
         Storage::disk('public')->put('campaign-images/test.jpg', 'fake content');
 
         $response = $this->delete(route('images.destroy'), [
-            'path' => 'campaign-images/test.jpg'
+            'path' => 'campaign-images/test.jpg',
         ]);
 
         $response->assertOk()
@@ -178,7 +178,7 @@ describe('destroy', function () {
 
     test('only allows deleting files in campaign-images directory', function () {
         $response = $this->delete(route('images.destroy'), [
-            'path' => '../../../etc/passwd'
+            'path' => '../../../etc/passwd',
         ]);
 
         $response->assertStatus(400)
@@ -187,7 +187,7 @@ describe('destroy', function () {
 
     test('prevents directory traversal attacks', function () {
         $response = $this->delete(route('images.destroy'), [
-            'path' => 'campaign-images/../secret.txt'
+            'path' => 'campaign-images/../secret.txt',
         ]);
 
         // The current implementation may not be catching this properly
@@ -197,7 +197,7 @@ describe('destroy', function () {
 
     test('succeeds even if file does not exist', function () {
         $response = $this->delete(route('images.destroy'), [
-            'path' => 'campaign-images/nonexistent.jpg'
+            'path' => 'campaign-images/nonexistent.jpg',
         ]);
 
         $response->assertOk()
@@ -208,7 +208,7 @@ describe('destroy', function () {
         auth()->logout();
 
         $response = $this->delete(route('images.destroy'), [
-            'path' => 'campaign-images/test.jpg'
+            'path' => 'campaign-images/test.jpg',
         ]);
 
         $response->assertRedirect(route('login'));
@@ -239,12 +239,12 @@ describe('index', function () {
                 'images',
                 'has_more',
                 'current_page',
-                'total'
+                'total',
             ])
             ->assertJson([
                 'has_more' => true,
                 'current_page' => 1,
-                'total' => 25
+                'total' => 25,
             ]);
 
         expect(count($response->json('images')))->toBe(20); // Default page size
@@ -299,7 +299,7 @@ describe('index', function () {
             'width' => 600,
             'height' => 400,
             'user_id' => $this->user->id,
-            'created_at' => now()->subDay()
+            'created_at' => now()->subDay(),
         ]);
         $newImage = Image::create([
             'filename' => 'new_test.jpg',
@@ -311,7 +311,7 @@ describe('index', function () {
             'width' => 600,
             'height' => 400,
             'user_id' => $this->user->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $response = $this->get(route('images.index'));
@@ -331,7 +331,7 @@ describe('index', function () {
                 'images' => [],
                 'has_more' => false,
                 'current_page' => 1,
-                'total' => 0
+                'total' => 0,
             ]);
     });
 

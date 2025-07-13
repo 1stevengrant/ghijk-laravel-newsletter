@@ -10,11 +10,11 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'valid-token-123'
+            'unsubscribe_token' => 'valid-token-123',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'valid-token-123'
+            'token' => 'valid-token-123',
         ]));
 
         $response->assertOk()
@@ -31,17 +31,17 @@ describe('unsubscribe email', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'unsubscribes' => 5
+            'unsubscribes' => 5,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'valid-token-456'
+            'unsubscribe_token' => 'valid-token-456',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
             'token' => 'valid-token-456',
-            'campaign' => $campaign->id
+            'campaign' => $campaign->id,
         ]));
 
         $response->assertOk()
@@ -63,7 +63,7 @@ describe('unsubscribe email', function () {
 
     test('returns 404 when empty token provided', function () {
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => ''
+            'token' => '',
         ]));
 
         $response->assertNotFound();
@@ -71,7 +71,7 @@ describe('unsubscribe email', function () {
 
     test('returns 404 for invalid token', function () {
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'invalid-token-that-does-not-exist'
+            'token' => 'invalid-token-that-does-not-exist',
         ]));
 
         $response->assertNotFound();
@@ -82,12 +82,12 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'valid-token-789'
+            'unsubscribe_token' => 'valid-token-789',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
             'token' => 'valid-token-789',
-            'campaign' => 999999 // Non-existent campaign ID
+            'campaign' => 999999, // Non-existent campaign ID
         ]));
 
         $response->assertOk()
@@ -104,17 +104,17 @@ describe('unsubscribe email', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'unsubscribes' => 3
+            'unsubscribes' => 3,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'valid-token-empty'
+            'unsubscribe_token' => 'valid-token-empty',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
             'token' => 'valid-token-empty',
-            'campaign' => '' // Empty campaign ID
+            'campaign' => '', // Empty campaign ID
         ]));
 
         $response->assertOk();
@@ -132,11 +132,11 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'unsubscribed', // Already unsubscribed
-            'unsubscribe_token' => 'already-unsubscribed-token'
+            'unsubscribe_token' => 'already-unsubscribed-token',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'already-unsubscribed-token'
+            'token' => 'already-unsubscribed-token',
         ]));
 
         $response->assertOk()
@@ -154,11 +154,11 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'public-unsubscribe-token'
+            'unsubscribe_token' => 'public-unsubscribe-token',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'public-unsubscribe-token'
+            'token' => 'public-unsubscribe-token',
         ]));
 
         $response->assertOk();
@@ -170,11 +170,11 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => $specialToken
+            'unsubscribe_token' => $specialToken,
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => $specialToken
+            'token' => $specialToken,
         ]));
 
         $response->assertOk()
@@ -190,11 +190,11 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => $longToken
+            'unsubscribe_token' => $longToken,
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => $longToken
+            'token' => $longToken,
         ]));
 
         $response->assertOk();
@@ -208,19 +208,19 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'exact-match-token'
+            'unsubscribe_token' => 'exact-match-token',
         ]);
 
         // Try with partial token
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'exact-match'
+            'token' => 'exact-match',
         ]));
 
         $response->assertNotFound();
 
         // Try with extra characters
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'exact-match-token-extra'
+            'token' => 'exact-match-token-extra',
         ]));
 
         $response->assertNotFound();
@@ -234,19 +234,19 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'CaseSensitiveToken123'
+            'unsubscribe_token' => 'CaseSensitiveToken123',
         ]);
 
         // Try with different case
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'casesensitivetoken123'
+            'token' => 'casesensitivetoken123',
         ]));
 
         $response->assertNotFound();
 
         // Try with correct case
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'CaseSensitiveToken123'
+            'token' => 'CaseSensitiveToken123',
         ]));
 
         $response->assertOk();
@@ -259,18 +259,18 @@ describe('unsubscribe email', function () {
         $list = NewsletterList::factory()->create();
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'unsubscribes' => 0
+            'unsubscribes' => 0,
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'multi-attempt-token'
+            'unsubscribe_token' => 'multi-attempt-token',
         ]);
 
         // First unsubscribe attempt
         $this->get(route('newsletter.unsubscribe', [
             'token' => 'multi-attempt-token',
-            'campaign' => $campaign->id
+            'campaign' => $campaign->id,
         ]));
 
         $campaign->refresh();
@@ -279,7 +279,7 @@ describe('unsubscribe email', function () {
         // Second attempt (already unsubscribed)
         $this->get(route('newsletter.unsubscribe', [
             'token' => 'multi-attempt-token',
-            'campaign' => $campaign->id
+            'campaign' => $campaign->id,
         ]));
 
         $campaign->refresh();
@@ -288,7 +288,7 @@ describe('unsubscribe email', function () {
 
     test('provides subscriber data to view', function () {
         $list = NewsletterList::factory()->create([
-            'name' => 'Test Newsletter'
+            'name' => 'Test Newsletter',
         ]);
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
@@ -296,16 +296,16 @@ describe('unsubscribe email', function () {
             'first_name' => 'John',
             'last_name' => 'Doe',
             'status' => 'subscribed',
-            'unsubscribe_token' => 'view-data-token'
+            'unsubscribe_token' => 'view-data-token',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
-            'token' => 'view-data-token'
+            'token' => 'view-data-token',
         ]));
 
         $response->assertOk()
             ->assertViewIs('emails.unsubscribed')
-            ->assertViewHas('subscriber', function ($viewSubscriber) use ($subscriber) {
+            ->assertViewHas('subscriber', function ($viewSubscriber) {
                 return $viewSubscriber->email === 'test@example.com' &&
                        $viewSubscriber->first_name === 'John' &&
                        $viewSubscriber->last_name === 'Doe';
@@ -317,12 +317,12 @@ describe('unsubscribe email', function () {
         $subscriber = NewsletterSubscriber::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => 'subscribed',
-            'unsubscribe_token' => 'null-campaign-token'
+            'unsubscribe_token' => 'null-campaign-token',
         ]);
 
         $response = $this->get(route('newsletter.unsubscribe', [
             'token' => 'null-campaign-token',
-            'campaign' => null
+            'campaign' => null,
         ]));
 
         $response->assertOk();

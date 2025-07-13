@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Image;
 use App\Models\User;
+use App\Models\Image;
 
 describe('Image Model', function () {
     uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -20,14 +20,14 @@ describe('Image Model', function () {
             'user_id',
         ];
 
-        expect((new Image())->getFillable())->toBe($fillable);
+        expect((new Image)->getFillable())->toBe($fillable);
     });
 
     test('casts integer fields correctly', function () {
         $image = new Image([
             'size' => '1024000',
             'width' => '800',
-            'height' => '600'
+            'height' => '600',
         ]);
 
         expect($image->size)->toBeInt()
@@ -50,7 +50,7 @@ describe('Image Model', function () {
             'width' => 800,
             'height' => 600,
             'alt_text' => 'Test image',
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->user)->toBeInstanceOf(User::class)
@@ -66,7 +66,7 @@ describe('Image Model', function () {
             'original_filename' => 'minimal.jpg',
             'mime_type' => 'image/jpeg',
             'size' => 1024000,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->filename)->toBe('minimal.jpg')
@@ -90,7 +90,7 @@ describe('Image Model', function () {
             'width' => 1200,
             'height' => 900,
             'alt_text' => 'PNG test image',
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->mime_type)->toBe('image/png')
@@ -109,7 +109,7 @@ describe('Image Model', function () {
             'width' => 3840,
             'height' => 2160,
             'alt_text' => 'A beautiful landscape photo',
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->size)->toBe(5242880)
@@ -131,7 +131,7 @@ describe('Image Model', function () {
             'width' => null,
             'height' => null,
             'alt_text' => null,
-            'user_id' => $user->id // Required field
+            'user_id' => $user->id, // Required field
         ]);
 
         expect($image->size)->toBe(1024000)
@@ -151,7 +151,7 @@ describe('Image Model', function () {
                 'original_filename' => 'orphan.jpg',
                 'mime_type' => 'image/jpeg',
                 'size' => 1024000,
-                'user_id' => null
+                'user_id' => null,
             ]);
         })->toThrow(\Illuminate\Database\QueryException::class);
     });
@@ -165,7 +165,7 @@ describe('Image Model', function () {
             'original_filename' => 'cdn_test.jpg',
             'mime_type' => 'image/jpeg',
             'size' => 1024000,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         // Path might be local storage path
@@ -192,7 +192,7 @@ describe('Image Model', function () {
                 'original_filename' => $format['filename'],
                 'mime_type' => $format['mime_type'],
                 'size' => 1024000,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
 
             expect($image->mime_type)->toBe($format['mime_type'])
@@ -211,7 +211,7 @@ describe('Image Model', function () {
             'size' => 52428800, // 50MB
             'width' => 7680,     // 8K width
             'height' => 4320,     // 8K height
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->size)->toBe(52428800)
@@ -231,7 +231,7 @@ describe('Image Model', function () {
             'mime_type' => 'image/jpeg',
             'alt_text' => $longAltText,
             'size' => 1024000,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->alt_text)->toBe($longAltText);
@@ -248,7 +248,7 @@ describe('Image Model', function () {
             'original_filename' => $originalFilename,
             'mime_type' => 'image/jpeg',
             'size' => 1024000,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         expect($image->original_filename)->toBe($originalFilename)

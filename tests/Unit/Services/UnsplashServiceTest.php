@@ -1,48 +1,46 @@
 <?php
 
 use App\Models\User;
-use App\Models\Image;
 use App\Services\UnsplashService;
+use Saloon\Http\Faking\MockClient;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Integrations\UnsplashConnector;
-use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Integrations\Requests\GetPhotoRequest;
 use App\Http\Integrations\Requests\SearchPhotosRequest;
 use App\Http\Integrations\Requests\TrackDownloadRequest;
 
 describe('UnsplashService', function () {
     uses(\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class);
-    
+
     beforeEach(function () {
         Storage::fake('public');
         Http::fake();
         Log::shouldReceive('error')->andReturn(null)->byDefault();
-        
+
         // Create a user for authentication
         $this->user = User::factory()->create();
         $this->actingAs($this->user);
     });
-    
+
     afterEach(function () {
         MockClient::destroyGlobal();
     });
-    
+
     test('searchPhotos returns formatted results on successful response', function () {
         MockClient::global([
             SearchPhotosRequest::class => MockResponse::fixture('Unsplash/search_photos_success'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->searchPhotos('landscape', 1, 20);
-        
+
         expect($result)->toBeArray();
         expect($result['total'])->toBe(1000);
         expect($result['total_pages'])->toBe(50);
         expect($result['results'])->toHaveCount(1);
-        
+
         $photo = $result['results'][0];
         expect($photo['id'])->toBe('photo-1');
         expect($photo['description'])->toBe('Beautiful landscape');
@@ -55,15 +53,15 @@ describe('UnsplashService', function () {
         MockClient::global([
             SearchPhotosRequest::class => MockResponse::make([], 500),
         ]);
-        
+
         Log::shouldReceive('error')->once()->with('Unsplash API error', [
             'status' => 500,
             'response' => '[]',
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->searchPhotos('landscape');
-        
+
         expect($result)->toBe([]);
     });
 
@@ -71,10 +69,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             SearchPhotosRequest::class => MockResponse::fixture('Unsplash/empty_response'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->searchPhotos('landscape');
-        
+
         expect($result)->toBeArray();
         expect($result['results'])->toBeArray();
         expect($result['results'])->toHaveCount(0);
@@ -86,10 +84,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::fixture('Unsplash/get_photo_success'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->getPhoto('single-photo');
-        
+
         expect($result)->toBeArray();
         expect($result['id'])->toBe('single-photo');
         expect($result['description'])->toBe('Amazing sunset');
@@ -103,16 +101,16 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::make([], 404),
         ]);
-        
+
         Log::shouldReceive('error')->once()->with('Unsplash photo fetch error', [
             'photo_id' => 'nonexistent',
             'status' => 404,
             'response' => '[]',
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->getPhoto('nonexistent');
-        
+
         expect($result)->toBeNull();
     });
 
@@ -120,10 +118,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::fixture('Unsplash/minimal_photo_data'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->getPhoto('minimal-photo');
-        
+
         expect($result)->toBeArray();
         expect($result['id'])->toBe('minimal-photo');
         expect($result['description'])->toBe(''); // Should default to empty
@@ -135,10 +133,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             TrackDownloadRequest::class => MockResponse::make([], 200),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->trackDownload('photo-id');
-        
+
         expect($result)->toBeTrue();
     });
 
@@ -146,10 +144,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             TrackDownloadRequest::class => MockResponse::make([], 400),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->trackDownload('photo-id');
-        
+
         expect($result)->toBeFalse();
     });
 
@@ -157,10 +155,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             TrackDownloadRequest::class => MockResponse::make([], 408), // Request timeout
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->trackDownload('photo-id');
-        
+
         expect($result)->toBeFalse();
     });
 
@@ -169,9 +167,9 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::fixture('Unsplash/download_photo_data'),
         ]);
-        
-        $service = new UnsplashService();
-        
+
+        $service = new UnsplashService;
+
         // Test that the fixture works for getPhoto
         $photo = $service->getPhoto('download-photo');
         expect($photo)->toBeArray();
@@ -189,10 +187,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::fixture('Unsplash/campaign_photo_data'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $photo = $service->getPhoto('campaign-photo');
-        
+
         expect($photo)->toBeArray();
         expect($photo['id'])->toBe('campaign-photo');
         expect($photo['description'])->toBe('Campaign image');
@@ -204,10 +202,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::make([], 404),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->downloadAndSavePhoto('nonexistent-photo');
-        
+
         expect($result)->toBeNull();
     });
 
@@ -216,10 +214,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::fixture('Unsplash/failed_download_photo'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $photo = $service->getPhoto('failed-download');
-        
+
         expect($photo)->toBeArray();
         expect($photo['id'])->toBe('failed-download');
         expect($photo['description'])->toBe('Failed download photo');
@@ -232,15 +230,15 @@ describe('UnsplashService', function () {
                 throw new \Exception('Processing error');
             },
         ]);
-        
+
         Log::shouldReceive('error')->once()->with('Unsplash download and save error', [
             'photo_id' => 'error-photo',
             'error' => 'Processing error',
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->downloadAndSavePhoto('error-photo');
-        
+
         expect($result)->toBeNull();
     });
 
@@ -262,10 +260,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::make($photoData, 200),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->getPhoto('minimal-photo');
-        
+
         expect($result)->toBeArray();
         expect($result['id'])->toBe('minimal-photo');
         expect($result['description'])->toBe(''); // Should default to empty string
@@ -281,12 +279,12 @@ describe('UnsplashService', function () {
         MockClient::global([
             SearchPhotosRequest::class => MockResponse::fixture('Unsplash/empty_response'),
         ]);
-        
-        $service = new UnsplashService();
-        
+
+        $service = new UnsplashService;
+
         // Test with custom page and perPage parameters
         $result = $service->searchPhotos('nature', 2, 30);
-        
+
         expect($result)->toBeArray();
         expect($result['results'])->toBeArray();
         expect($result['total'])->toBe(0);
@@ -297,10 +295,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             SearchPhotosRequest::class => MockResponse::fixture('Unsplash/malformed_response'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $result = $service->searchPhotos('test');
-        
+
         expect($result)->toBeArray();
         expect($result['results'])->toBeArray();
         expect($result['results'])->toHaveCount(0); // Empty array when results missing
@@ -313,10 +311,10 @@ describe('UnsplashService', function () {
         MockClient::global([
             GetPhotoRequest::class => MockResponse::fixture('Unsplash/metadata_photo_data'),
         ]);
-        
-        $service = new UnsplashService();
+
+        $service = new UnsplashService;
         $photo = $service->getPhoto('metadata-test');
-        
+
         expect($photo)->toBeArray();
         expect($photo['id'])->toBe('metadata-test');
         expect($photo['description'])->toBe('Metadata test image');

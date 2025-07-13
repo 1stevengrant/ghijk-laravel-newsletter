@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Middleware\IsSuperAdminMiddleware;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Middleware\IsSuperAdminMiddleware;
 
 describe('IsSuperAdminMiddleware', function () {
     test('allows access for authenticated super admin user', function () {
         $superAdmin = User::factory()->create(['super_admin' => true]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -27,7 +27,7 @@ describe('IsSuperAdminMiddleware', function () {
         $regularUser = User::factory()->create(['super_admin' => false]);
         $this->actingAs($regularUser);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -43,7 +43,7 @@ describe('IsSuperAdminMiddleware', function () {
     test('denies access for guest user', function () {
         $this->assertGuest();
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -61,7 +61,7 @@ describe('IsSuperAdminMiddleware', function () {
         $user = User::factory()->create(); // super_admin will default to false
         $this->actingAs($user);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -78,7 +78,7 @@ describe('IsSuperAdminMiddleware', function () {
         $superAdmin = User::factory()->create(['super_admin' => true]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET', ['param' => 'value']);
 
         $next = function (Request $req) {
@@ -94,7 +94,7 @@ describe('IsSuperAdminMiddleware', function () {
         $superAdmin = User::factory()->create(['super_admin' => true]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'POST', ['data' => 'test-data']);
 
         $next = function (Request $req) {
@@ -110,7 +110,7 @@ describe('IsSuperAdminMiddleware', function () {
         $superAdmin = User::factory()->create(['super_admin' => true]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'POST', [], [], [],
             ['CONTENT_TYPE' => 'application/json'],
             '{"key": "value"}'
@@ -130,7 +130,7 @@ describe('IsSuperAdminMiddleware', function () {
         $regularUser = User::factory()->create(['super_admin' => false]);
         $this->actingAs($regularUser);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -150,11 +150,11 @@ describe('IsSuperAdminMiddleware', function () {
         $superAdmin = User::factory()->create([
             'super_admin' => true,
             'name' => 'Super Admin User',
-            'email' => 'admin@example.com'
+            'email' => 'admin@example.com',
         ]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -171,7 +171,7 @@ describe('IsSuperAdminMiddleware', function () {
         $user1 = User::factory()->create(['super_admin' => 1]);
         $this->actingAs($user1);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -193,7 +193,7 @@ describe('IsSuperAdminMiddleware', function () {
         $superAdmin = User::factory()->create(['super_admin' => true]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         $next = function () {
@@ -210,7 +210,7 @@ describe('IsSuperAdminMiddleware', function () {
         $superAdmin = User::factory()->create(['super_admin' => true]);
         $this->actingAs($superAdmin);
 
-        $middleware = new IsSuperAdminMiddleware();
+        $middleware = new IsSuperAdminMiddleware;
         $request = Request::create('/test', 'GET');
 
         // Simulate another middleware in the chain

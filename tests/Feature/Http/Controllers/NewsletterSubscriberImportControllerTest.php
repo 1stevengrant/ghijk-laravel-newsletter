@@ -2,8 +2,8 @@
 
 use App\Models\User;
 use App\Models\Import;
-use App\Models\NewsletterList;
 use App\Jobs\ProcessImportJob;
+use App\Models\NewsletterList;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;

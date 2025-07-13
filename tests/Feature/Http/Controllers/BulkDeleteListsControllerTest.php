@@ -16,7 +16,7 @@ describe('bulk delete lists', function () {
         $list3 = NewsletterList::factory()->create();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list1->id, $list2->id]
+            'list_ids' => [$list1->id, $list2->id],
         ]);
 
         $response->assertRedirect(route('lists.index'))
@@ -31,7 +31,7 @@ describe('bulk delete lists', function () {
         $list = NewsletterList::factory()->create();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list->id]
+            'list_ids' => [$list->id],
         ]);
 
         $response->assertRedirect(route('lists.index'))
@@ -48,7 +48,7 @@ describe('bulk delete lists', function () {
 
     test('validates list_ids is array', function () {
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => 'not-an-array'
+            'list_ids' => 'not-an-array',
         ]);
 
         $response->assertSessionHasErrors(['list_ids']);
@@ -56,7 +56,7 @@ describe('bulk delete lists', function () {
 
     test('validates list_ids array is not empty', function () {
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => []
+            'list_ids' => [],
         ]);
 
         $response->assertSessionHasErrors(['list_ids']);
@@ -66,7 +66,7 @@ describe('bulk delete lists', function () {
         $list = NewsletterList::factory()->create();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list->id, 'not-integer']
+            'list_ids' => [$list->id, 'not-integer'],
         ]);
 
         $response->assertSessionHasErrors(['list_ids.1']);
@@ -76,7 +76,7 @@ describe('bulk delete lists', function () {
         $list = NewsletterList::factory()->create();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list->id, 999999]
+            'list_ids' => [$list->id, 999999],
         ]);
 
         $response->assertSessionHasErrors(['list_ids.1']);
@@ -85,27 +85,27 @@ describe('bulk delete lists', function () {
     test('deletes associated subscribers when lists are deleted', function () {
         $list1 = NewsletterList::factory()->create();
         $list2 = NewsletterList::factory()->create();
-        
+
         $subscriber1 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list1->id
+            'newsletter_list_id' => $list1->id,
         ]);
         $subscriber2 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list2->id
+            'newsletter_list_id' => $list2->id,
         ]);
         $subscriber3 = NewsletterSubscriber::factory()->create([
-            'newsletter_list_id' => $list2->id
+            'newsletter_list_id' => $list2->id,
         ]);
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list1->id, $list2->id]
+            'list_ids' => [$list1->id, $list2->id],
         ]);
 
         $response->assertRedirect(route('lists.index'));
-        
+
         // Check that lists and their subscribers are deleted
         $this->assertDatabaseMissing('newsletter_lists', ['id' => $list1->id]);
         $this->assertDatabaseMissing('newsletter_lists', ['id' => $list2->id]);
-        
+
         // Note: This assumes cascade delete is set up in the database
         // If not, subscribers would still exist
         $this->assertDatabaseCount('newsletter_lists', 0);
@@ -116,7 +116,7 @@ describe('bulk delete lists', function () {
         $listIds = $lists->pluck('id')->toArray();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => $listIds
+            'list_ids' => $listIds,
         ]);
 
         $response->assertRedirect(route('lists.index'))
@@ -128,7 +128,7 @@ describe('bulk delete lists', function () {
     test('returns correct count when some lists do not exist', function () {
         $list1 = NewsletterList::factory()->create();
         $list2 = NewsletterList::factory()->create();
-        
+
         // Delete one list manually to simulate non-existent ID passing validation
         $list2->delete();
 
@@ -136,7 +136,7 @@ describe('bulk delete lists', function () {
         // the scenario where IDs exist at validation time but are deleted
         // before the bulk delete executes
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list1->id]
+            'list_ids' => [$list1->id],
         ]);
 
         $response->assertRedirect(route('lists.index'))
@@ -145,11 +145,11 @@ describe('bulk delete lists', function () {
 
     test('redirects guests to login', function () {
         auth()->logout();
-        
+
         $list = NewsletterList::factory()->create();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list->id]
+            'list_ids' => [$list->id],
         ]);
 
         $response->assertRedirect(route('login'));
@@ -157,7 +157,7 @@ describe('bulk delete lists', function () {
 
     test('validates nested array values are required', function () {
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [null, '']
+            'list_ids' => [null, ''],
         ]);
 
         $response->assertSessionHasErrors(['list_ids.0', 'list_ids.1']);
@@ -167,7 +167,7 @@ describe('bulk delete lists', function () {
         $list = NewsletterList::factory()->create();
 
         $response = $this->delete(route('lists.bulk-delete'), [
-            'list_ids' => [$list->id, $list->id, $list->id]
+            'list_ids' => [$list->id, $list->id, $list->id],
         ]);
 
         $response->assertRedirect(route('lists.index'))

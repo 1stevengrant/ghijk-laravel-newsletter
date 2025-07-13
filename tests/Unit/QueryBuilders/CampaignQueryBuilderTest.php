@@ -12,12 +12,12 @@ describe('CampaignQueryBuilder', function () {
 
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_DRAFT
+            'status' => Campaign::STATUS_DRAFT,
         ]);
 
         $sentCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENT
+            'status' => Campaign::STATUS_SENT,
         ]);
 
         $results = Campaign::query()->whereDraft()->get();
@@ -32,12 +32,12 @@ describe('CampaignQueryBuilder', function () {
 
         $scheduledCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SCHEDULED
+            'status' => Campaign::STATUS_SCHEDULED,
         ]);
 
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_DRAFT
+            'status' => Campaign::STATUS_DRAFT,
         ]);
 
         $results = Campaign::query()->whereScheduled()->get();
@@ -52,12 +52,12 @@ describe('CampaignQueryBuilder', function () {
 
         $sendingCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_DRAFT
+            'status' => Campaign::STATUS_DRAFT,
         ]);
 
         $results = Campaign::query()->whereSending()->get();
@@ -72,12 +72,12 @@ describe('CampaignQueryBuilder', function () {
 
         $sentCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENT
+            'status' => Campaign::STATUS_SENT,
         ]);
 
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_DRAFT
+            'status' => Campaign::STATUS_DRAFT,
         ]);
 
         $results = Campaign::query()->whereSent()->get();
@@ -92,12 +92,12 @@ describe('CampaignQueryBuilder', function () {
 
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_DRAFT
+            'status' => Campaign::STATUS_DRAFT,
         ]);
 
         $sentCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENT
+            'status' => Campaign::STATUS_SENT,
         ]);
 
         $draftResults = Campaign::query()->whereStatus(Campaign::STATUS_DRAFT)->get();
@@ -115,22 +115,22 @@ describe('CampaignQueryBuilder', function () {
         // Create campaigns with different statuses
         Campaign::factory()->count(2)->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_DRAFT
+            'status' => Campaign::STATUS_DRAFT,
         ]);
 
         Campaign::factory()->count(3)->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SCHEDULED
+            'status' => Campaign::STATUS_SCHEDULED,
         ]);
 
         Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENDING
+            'status' => Campaign::STATUS_SENDING,
         ]);
 
         Campaign::factory()->count(4)->create([
             'newsletter_list_id' => $list->id,
-            'status' => Campaign::STATUS_SENT
+            'status' => Campaign::STATUS_SENT,
         ]);
 
         $counts = Campaign::query()->countByStatus();
@@ -150,13 +150,13 @@ describe('CampaignQueryBuilder', function () {
         $pastCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => $pastDate
+            'scheduled_at' => $pastDate,
         ]);
 
         $futureCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => $futureDate
+            'scheduled_at' => $futureDate,
         ]);
 
         $results = Campaign::query()->whereScheduledBefore(now())->get();
@@ -173,13 +173,13 @@ describe('CampaignQueryBuilder', function () {
         $pastCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => $pastDate
+            'scheduled_at' => $pastDate,
         ]);
 
         $futureCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => $futureDate
+            'scheduled_at' => $futureDate,
         ]);
 
         $results = Campaign::query()->whereScheduledAfter(now())->get();
@@ -195,28 +195,28 @@ describe('CampaignQueryBuilder', function () {
         $readyCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => now()->subHour()
+            'scheduled_at' => now()->subHour(),
         ]);
 
         // Campaign scheduled in the future - not ready
         $futureCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => now()->addHour()
+            'scheduled_at' => now()->addHour(),
         ]);
 
         // Draft campaign - not ready
         $draftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_DRAFT,
-            'scheduled_at' => now()->subHour()
+            'scheduled_at' => now()->subHour(),
         ]);
 
         // Scheduled campaign with null scheduled_at - not ready
         $nullScheduledCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => null
+            'scheduled_at' => null,
         ]);
 
         $results = Campaign::query()->readyToSend()->get();
@@ -230,12 +230,12 @@ describe('CampaignQueryBuilder', function () {
 
         $oldCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()->subDays(2)
+            'created_at' => now()->subDays(2),
         ]);
 
         $newCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $results = Campaign::query()->orderByLatest()->get();
@@ -249,12 +249,12 @@ describe('CampaignQueryBuilder', function () {
 
         $oldCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()->subDays(2)
+            'created_at' => now()->subDays(2),
         ]);
 
         $newCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $results = Campaign::query()->orderByOldest()->get();
@@ -269,19 +269,19 @@ describe('CampaignQueryBuilder', function () {
         $oldDraftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_DRAFT,
-            'created_at' => now()->subDays(2)
+            'created_at' => now()->subDays(2),
         ]);
 
         $newDraftCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_DRAFT,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $sentCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SENT,
-            'created_at' => now()->subDay()
+            'created_at' => now()->subDay(),
         ]);
 
         $results = Campaign::query()
@@ -313,16 +313,16 @@ describe('CampaignQueryBuilder', function () {
 
         \App\Models\NewsletterSubscriber::factory()->count($subscribedCount)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         \App\Models\NewsletterSubscriber::factory()->count($unsubscribedCount)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $list->id
+            'newsletter_list_id' => $list->id,
         ]);
 
         $result = Campaign::query()
@@ -352,7 +352,7 @@ describe('CampaignQueryBuilder', function () {
         $nowCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
             'status' => Campaign::STATUS_SCHEDULED,
-            'scheduled_at' => now()
+            'scheduled_at' => now(),
         ]);
 
         $beforeResults = Campaign::query()->whereScheduledBefore(now())->get();

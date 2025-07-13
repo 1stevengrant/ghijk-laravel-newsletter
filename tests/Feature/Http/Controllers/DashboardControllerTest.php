@@ -15,18 +15,18 @@ describe('dashboard', function () {
     test('displays dashboard with campaign statistics', function () {
         // Create campaigns with different statuses
         $list = NewsletterList::factory()->create();
-        
+
         Campaign::factory()->count(2)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
         Campaign::factory()->count(3)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'scheduled'
+            'status' => 'scheduled',
         ]);
         Campaign::factory()->count(1)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'sent'
+            'status' => 'sent',
         ]);
 
         $response = $this->get(route('dashboard'));
@@ -55,17 +55,17 @@ describe('dashboard', function () {
 
     test('displays subscribed subscriber count only', function () {
         $list = NewsletterList::factory()->create();
-        
+
         // Create subscribed subscribers
         NewsletterSubscriber::factory()->count(8)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
-        
+
         // Create unsubscribed subscribers (should not be counted)
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $response = $this->get(route('dashboard'));
@@ -94,18 +94,18 @@ describe('dashboard', function () {
 
     test('handles mixed campaign statuses correctly', function () {
         $list = NewsletterList::factory()->create();
-        
+
         Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
         Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'sending'
+            'status' => 'sending',
         ]);
         Campaign::factory()->create([
             'newsletter_list_id' => $list->id,
-            'status' => 'sent'
+            'status' => 'sent',
         ]);
 
         $response = $this->get(route('dashboard'));
@@ -123,14 +123,14 @@ describe('dashboard', function () {
     test('counts campaigns across multiple newsletter lists', function () {
         $list1 = NewsletterList::factory()->create();
         $list2 = NewsletterList::factory()->create();
-        
+
         Campaign::factory()->count(2)->create([
             'newsletter_list_id' => $list1->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
         Campaign::factory()->count(3)->create([
             'newsletter_list_id' => $list2->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $response = $this->get(route('dashboard'));
@@ -147,14 +147,14 @@ describe('dashboard', function () {
     test('counts subscribers across multiple newsletter lists', function () {
         $list1 = NewsletterList::factory()->create();
         $list2 = NewsletterList::factory()->create();
-        
+
         NewsletterSubscriber::factory()->count(4)->create([
             'newsletter_list_id' => $list1->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
         NewsletterSubscriber::factory()->count(6)->create([
             'newsletter_list_id' => $list2->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->get(route('dashboard'));
@@ -169,20 +169,20 @@ describe('dashboard', function () {
 
     test('handles large numbers correctly', function () {
         $lists = NewsletterList::factory()->count(100)->create();
-        
+
         // Create campaigns for first few lists
         foreach ($lists->take(10) as $list) {
             Campaign::factory()->count(5)->create([
                 'newsletter_list_id' => $list->id,
-                'status' => 'sent'
+                'status' => 'sent',
             ]);
         }
-        
+
         // Create subscribers for all lists
         foreach ($lists as $list) {
             NewsletterSubscriber::factory()->count(50)->create([
                 'newsletter_list_id' => $list->id,
-                'status' => 'subscribed'
+                'status' => 'subscribed',
             ]);
         }
 

@@ -16,7 +16,6 @@ class NewsletterSubscriberQueryBuilder extends Builder
         return $this->where('status', 'unsubscribed');
     }
 
-
     public function whereStatus(string $status): self
     {
         return $this->where('status', $status);

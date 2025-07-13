@@ -18,16 +18,16 @@ describe('index', function () {
     test('displays campaigns with newsletter list data', function () {
         $campaign1 = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'created_at' => now()->subMinute()
+            'created_at' => now()->subMinute(),
         ]);
         $campaign2 = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->get(route('campaigns.index'));
@@ -48,11 +48,11 @@ describe('index', function () {
     test('orders campaigns by creation date descending', function () {
         $oldCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'created_at' => now()->subDay()
+            'created_at' => now()->subDay(),
         ]);
         $newCampaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $response = $this->get(route('campaigns.index'));
@@ -75,11 +75,11 @@ describe('index', function () {
 
         NewsletterSubscriber::factory()->count(2)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'unsubscribed'
+            'status' => 'unsubscribed',
         ]);
 
         $response = $this->get(route('campaigns.index'));
@@ -106,7 +106,7 @@ describe('create', function () {
     test('displays campaign creation form with newsletter lists', function () {
         NewsletterSubscriber::factory()->count(2)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $list2 = NewsletterList::factory()->create();
@@ -197,7 +197,7 @@ describe('content', function () {
     test('displays content editing form for editable campaign', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $response = $this->get(route('campaigns.content', $campaign));
@@ -216,7 +216,7 @@ describe('content', function () {
     test('redirects when trying to edit sent campaign', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'sent'
+            'status' => 'sent',
         ]);
 
         $response = $this->get(route('campaigns.content', $campaign));
@@ -232,7 +232,7 @@ describe('updateContent', function () {
 
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $data = [
@@ -260,7 +260,7 @@ describe('updateContent', function () {
 
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $data = [
@@ -277,7 +277,7 @@ describe('updateContent', function () {
     test('validates required fields', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $response = $this->put(route('campaigns.content.update', $campaign), []);
@@ -288,7 +288,7 @@ describe('updateContent', function () {
     test('validates status values', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $data = ['status' => 'invalid-status'];
@@ -301,7 +301,7 @@ describe('updateContent', function () {
     test('validates scheduled date is in future', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $data = [
@@ -317,7 +317,7 @@ describe('updateContent', function () {
     test('prevents editing sent campaigns', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'sent'
+            'status' => 'sent',
         ]);
 
         $data = ['content' => 'New content', 'status' => 'draft'];
@@ -332,12 +332,12 @@ describe('updateContent', function () {
 describe('show', function () {
     test('displays campaign with newsletter list and subscribers', function () {
         $campaign = Campaign::factory()->create([
-            'newsletter_list_id' => $this->list->id
+            'newsletter_list_id' => $this->list->id,
         ]);
 
         NewsletterSubscriber::factory()->count(3)->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'subscribed'
+            'status' => 'subscribed',
         ]);
 
         $response = $this->get(route('campaigns.show', $campaign));
@@ -365,7 +365,7 @@ describe('destroy', function () {
     test('deletes draft campaign', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
 
         $response = $this->delete(route('campaigns.destroy', $campaign));
@@ -379,7 +379,7 @@ describe('destroy', function () {
     test('prevents deleting non-draft campaigns', function () {
         $campaign = Campaign::factory()->create([
             'newsletter_list_id' => $this->list->id,
-            'status' => 'sent'
+            'status' => 'sent',
         ]);
 
         $response = $this->delete(route('campaigns.destroy', $campaign));

@@ -10,19 +10,19 @@ describe('User Model', function () {
     test('has correct fillable attributes', function () {
         $fillable = ['name', 'email', 'password'];
 
-        expect((new User())->getFillable())->toBe($fillable);
+        expect((new User)->getFillable())->toBe($fillable);
     });
 
     test('has correct hidden attributes', function () {
         $hidden = ['password', 'remember_token'];
 
-        expect((new User())->getHidden())->toBe($hidden);
+        expect((new User)->getHidden())->toBe($hidden);
     });
 
     test('casts attributes correctly', function () {
         $user = User::factory()->create([
             'email_verified_at' => '2024-01-01 12:00:00',
-            'super_admin' => 1
+            'super_admin' => 1,
         ]);
 
         expect($user->email_verified_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class)
@@ -34,7 +34,7 @@ describe('User Model', function () {
         $plainPassword = 'test-password-123';
 
         $user = User::factory()->create([
-            'password' => $plainPassword
+            'password' => $plainPassword,
         ]);
 
         expect($user->password)->not->toBe($plainPassword)
@@ -42,7 +42,7 @@ describe('User Model', function () {
     });
 
     test('implements MustVerifyEmail interface', function () {
-        $user = new User();
+        $user = new User;
 
         expect($user)->toBeInstanceOf(\Illuminate\Contracts\Auth\MustVerifyEmail::class);
     });
@@ -56,7 +56,7 @@ describe('User Model', function () {
     });
 
     test('extends Authenticatable class', function () {
-        $user = new User();
+        $user = new User;
 
         expect($user)->toBeInstanceOf(\Illuminate\Foundation\Auth\User::class);
     });
@@ -65,7 +65,7 @@ describe('User Model', function () {
         $user = User::create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         expect($user->name)->toBe('Test User')
@@ -84,7 +84,7 @@ describe('User Model', function () {
 
     test('can set super_admin to true', function () {
         $user = User::factory()->create([
-            'super_admin' => true
+            'super_admin' => true,
         ]);
 
         expect($user->super_admin)->toBeTrue();
@@ -112,7 +112,7 @@ describe('User Model', function () {
         $verificationTime = now();
 
         $user = User::factory()->create([
-            'email_verified_at' => $verificationTime
+            'email_verified_at' => $verificationTime,
         ]);
 
         expect($user->email_verified_at)->not->toBeNull()
@@ -121,7 +121,7 @@ describe('User Model', function () {
 
     test('email verification timestamp can be null', function () {
         $user = User::factory()->create([
-            'email_verified_at' => null
+            'email_verified_at' => null,
         ]);
 
         expect($user->email_verified_at)->toBeNull();
@@ -139,7 +139,7 @@ describe('User Model', function () {
 
     test('password is hidden in array conversion', function () {
         $user = User::factory()->create([
-            'password' => 'secret-password'
+            'password' => 'secret-password',
         ]);
 
         $userArray = $user->toArray();
@@ -170,7 +170,7 @@ describe('User Model', function () {
             'original_filename' => 'test1.jpg',
             'mime_type' => 'image/jpeg',
             'size' => 1024000,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         Image::create([
@@ -180,7 +180,7 @@ describe('User Model', function () {
             'original_filename' => 'test2.jpg',
             'mime_type' => 'image/jpeg',
             'size' => 2048000,
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         // Check that images were created for this user
@@ -193,7 +193,7 @@ describe('User Model', function () {
         $longName = 'This is a very long user name that might be used in some applications to test edge cases';
 
         $user = User::factory()->create([
-            'name' => $longName
+            'name' => $longName,
         ]);
 
         expect($user->name)->toBe($longName);
@@ -211,7 +211,7 @@ describe('User Model', function () {
 
     test('handles password updates correctly', function () {
         $user = User::factory()->create([
-            'password' => 'original-password'
+            'password' => 'original-password',
         ]);
 
         $originalHash = $user->password;
@@ -225,7 +225,7 @@ describe('User Model', function () {
 
     test('stores email in correct format', function () {
         $user = User::factory()->create([
-            'email' => 'TEST@EXAMPLE.COM'
+            'email' => 'TEST@EXAMPLE.COM',
         ]);
 
         expect($user->email)->toBe('TEST@EXAMPLE.COM');
@@ -235,7 +235,7 @@ describe('User Model', function () {
         $specialName = 'José María O\'Connor-Smith';
 
         $user = User::factory()->create([
-            'name' => $specialName
+            'name' => $specialName,
         ]);
 
         expect($user->name)->toBe($specialName);
@@ -259,7 +259,7 @@ describe('User Model', function () {
             ->and($user->email)->toBeString()
             ->and($user->email)->toContain('@')
             ->and($user->password)->toBeString()
-            ->and(strlen($user->password))->toBeGreaterThan(10);
+            ->and(mb_strlen($user->password))->toBeGreaterThan(10);
         // Hashed passwords are long
     });
 
@@ -270,7 +270,7 @@ describe('User Model', function () {
             'email' => 'test@example.com',
             'password' => 'password',
             'super_admin' => true, // Not in fillable
-            'remember_token' => 'should-not-be-set' // Not in fillable
+            'remember_token' => 'should-not-be-set', // Not in fillable
         ]);
 
         expect($user->name)->toBe('Test User')
